@@ -39,6 +39,8 @@ widget_style!{
         - justify: text::Justify { text::Justify::Left }
         /// The font used for the `Text`.
         - font_id: Option<text::font::Id> { theme.font_id }
+        /// Display text with all characters replaced by this
+        - char_replace: Option<char> { None }
     }
 }
 
@@ -91,6 +93,7 @@ impl<'a> TextBox<'a> {
         pub font_size { style.font_size = Some(FontSize) }
         pub justify { style.justify = Some(text::Justify) }
         pub pad_text { style.text_padding = Some(Scalar) }
+        pub hide_with_char { style.char_replace = Some(Option<char>) }
     }
 
 }
@@ -156,6 +159,8 @@ impl<'a> Widget for TextBox<'a> {
             .border_color(border_color)
             .set(state.ids.rectangle, ui);
 
+        let char_replace = style.char_replace(ui.theme());
+
         let mut events = Vec::new();
 
         let text_color = style.text_color(ui.theme());
@@ -167,6 +172,7 @@ impl<'a> Widget for TextBox<'a> {
             .font_size(font_size)
             .color(text_color)
             .justify(justify)
+            .hide_with_char(char_replace)
             .parent(id)
             .set(state.ids.text_edit, ui)
         {

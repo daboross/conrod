@@ -40,6 +40,8 @@ widget_style!{
         - restrict_to_height: bool { true }
         /// The font used for the `Text`.
         - font_id: Option<text::font::Id> { theme.font_id }
+        /// Display text with all characters replaced by this
+        - char_replace: Option<char> { None }
     }
 }
 
@@ -164,6 +166,7 @@ impl<'a> TextEdit<'a> {
         pub line_wrap { style.line_wrap = Some(Wrap) }
         pub line_spacing { style.line_spacing = Some(Scalar) }
         pub restrict_to_height { style.restrict_to_height = Some(bool) }
+        pub hide_with_char { style.char_replace = Some(Option<char>) }
     }
 
 }
@@ -274,6 +277,10 @@ impl<'a> Widget for TextEdit<'a> {
                 Wrap::Character => infos.wrap_by_character(max_width),
             }
         }
+
+        let mut replacement_string = style.char_replace
+            .and_then(|opt| opt)
+            .map(|c: char| text.chars().map(|_| c).collect::<String>().into());
 
         // Check to see if the given text has changed since the last time the widget was updated.
         {
@@ -441,7 +448,8 @@ impl<'a> Widget for TextEdit<'a> {
                         let abs_xy = utils::vec2_add(rel_xy, rect.xy());
                         let infos = &state.line_infos;
                         let font = ui.fonts.get(font_id).unwrap();
-                        let closest = closest_cursor_index_and_xy(abs_xy, &text, infos, font);
+                        let closest = closest_cursor_index_and_xy(abs_xy, &replacement_string.as_ref().unwrap_or(&text),
+                                                                  infos, font);
                         if let Some((closest_cursor, _)) = closest {
                             cursor = Cursor::Idx(closest_cursor);
                         }
@@ -506,6 +514,8 @@ impl<'a> Widget for TextEdit<'a> {
                                 *text.to_mut() = text.chars().take(start_idx)
                                     .chain(text.chars().skip(end_idx))
                                     .collect();
+                                replacement_string = style.char_replace.and_then(|opt| opt)
+                                    .map(|c: char| text.chars().map(|_| c).collect::<String>().into());
                                 state.update(|state| {
                                     let font = ui.fonts.get(font_id).unwrap();
                                     let w = rect.w();
@@ -526,20 +536,22 @@ impl<'a> Widget for TextEdit<'a> {
                                 Cursor::Selection { start, end } => (start, end),
                             };
 
+                            let displayed_text = replacement_string.as_ref().unwrap_or(&text);
+
                             let new_cursor_idx = {
                                 let line_infos = state.line_infos.iter().cloned();
                                 match (key, move_word) {
                                     (input::Key::Left, true) => cursor_idx
-                                        .previous_word_start(&text, line_infos),
+                                        .previous_word_start(&displayed_text, line_infos),
                                     (input::Key::Right, true) => cursor_idx
-                                        .next_word_end(&text, line_infos),
+                                        .next_word_end(&displayed_text, line_infos),
                                     (input::Key::Left, false) => cursor_idx
                                         .previous(line_infos),
                                     (input::Key::Right, false) => cursor_idx
                                         .next(line_infos),
 
                                     // Up/Down movement
-                                    _ => cursor_xy_at(cursor_idx, &text, &state.line_infos, font)
+                                    _ => cursor_xy_at(cursor_idx, &displayed_text, &state.line_infos, font)
                                         .and_then(|(x_pos, _)| {
                                             let text::cursor::Index { line, .. } = cursor_idx;
                                             let next_line = match key {
@@ -547,7 +559,7 @@ impl<'a> Widget for TextEdit<'a> {
                                                 input::Key::Down => line + 1,
                                                 _ => unreachable!(),
                                             };
-                                            closest_cursor_index_on_line(x_pos, next_line, &text, &state.line_infos, font)
+                                            closest_cursor_index_on_line(x_pos, next_line, &displayed_text, &state.line_infos, font)
                                         })
                                 }.unwrap_or(cursor_idx)
                             };
@@ -581,10 +593,10 @@ impl<'a> Widget for TextEdit<'a> {
                                                 let line_infos = state.line_infos.iter().cloned();
                                                 match key {
                                                     input::Key::Left | input::Key::Up => {
-                                                        cursor_idx.previous_word_start(&text, line_infos)
+                                                        cursor_idx.previous_word_start(&displayed_text, line_infos)
                                                     },
                                                     input::Key::Right | input::Key::Down => {
-                                                        cursor_idx.next_word_end(&text, line_infos)
+                                                        cursor_idx.next_word_end(&displayed_text, line_infos)
                                                     }
                                                     _ => unreachable!(),
                                                 }.unwrap_or(cursor_idx)
@@ -656,6 +668,8 @@ impl<'a> Widget for TextEdit<'a> {
                             match insert_text("\n", cursor, &text, &state.line_infos, font) {
                                 Some((new_text, new_cursor, new_line_infos)) => {
                                     *text.to_mut() = new_text;
+                                    replacement_string = style.char_replace.and_then(|opt| opt)
+                                        .map(|c: char| text.chars().map(|_| c).collect::<String>().into());
                                     cursor = new_cursor;
                                     state.update(|state| state.line_infos = new_line_infos);
                                 }, _ => ()
@@ -698,6 +712,8 @@ impl<'a> Widget for TextEdit<'a> {
                     match insert_text(&string, cursor, &text, &state.line_infos, font) {
                         Some((new_text, new_cursor, new_line_infos)) => {
                             *text.to_mut() = new_text;
+                            replacement_string = style.char_replace.and_then(|opt| opt)
+                                .map(|c: char| text.chars().map(|_| c).collect::<String>().into());
                             cursor = new_cursor;
                             state.update(|state| state.line_infos = new_line_infos);
                         }, _ => ()
@@ -706,8 +722,9 @@ impl<'a> Widget for TextEdit<'a> {
 
                 // Check whether or not we need to extend a text selection or drag some text.
                 event::Widget::Drag(drag_event) if drag_event.button == input::MouseButton::Left => {
-                    match drag {
+                    let displayed_text = replacement_string.as_ref().unwrap_or(&text);
 
+                    match drag {
                         Some(Drag::Selecting) => {
                             let start_cursor_idx = match cursor {
                                 Cursor::Idx(idx) => idx,
@@ -716,7 +733,7 @@ impl<'a> Widget for TextEdit<'a> {
                             let abs_xy = utils::vec2_add(drag_event.to, rect.xy());
                             let infos = &state.line_infos;
                             let font = ui.fonts.get(font_id).unwrap();
-                            match closest_cursor_index_and_xy(abs_xy, &text, infos, font) {
+                            match closest_cursor_index_and_xy(abs_xy, &displayed_text, infos, font) {
                                 Some((end_cursor_idx, _)) =>
                                     cursor = Cursor::Selection {
                                         start: start_cursor_idx,
@@ -763,20 +780,26 @@ impl<'a> Widget for TextEdit<'a> {
         let text_y_range = Range::new(0.0, text_height).align_to(y_align, rect.y);
         let text_rect = Rect { x: rect.x, y: text_y_range };
 
-        match line_wrap {
-            Wrap::Whitespace => widget::Text::new(&text).wrap_by_word(),
-            Wrap::Character => widget::Text::new(&text).wrap_by_character(),
+        {
+            let display_text = match replacement_string {
+                Some(ref s) => s,
+                None => &text,
+            };
+            match line_wrap {
+                Wrap::Whitespace => widget::Text::new(display_text).wrap_by_word(),
+                Wrap::Character => widget::Text::new(display_text).wrap_by_character(),
+            }
+                .font_id(font_id)
+                .wh(text_rect.dim())
+                .xy(text_rect.xy())
+                .justify(justify)
+                .parent(id)
+                .graphics_for(id)
+                .color(color)
+                .line_spacing(line_spacing)
+                .font_size(font_size)
+                .set(state.ids.text, ui);
         }
-            .font_id(font_id)
-            .wh(text_rect.dim())
-            .xy(text_rect.xy())
-            .justify(justify)
-            .parent(id)
-            .graphics_for(id)
-            .color(color)
-            .line_spacing(line_spacing)
-            .font_size(font_size)
-            .set(state.ids.text, ui);
 
         // Draw the line for the cursor.
         let cursor_idx = match cursor {
@@ -791,7 +814,7 @@ impl<'a> Widget for TextEdit<'a> {
 
         let (cursor_x, cursor_y_range) = {
             let font = ui.fonts.get(font_id).unwrap();
-            cursor_xy_at(cursor_idx, &text, &state.line_infos, font)
+            cursor_xy_at(cursor_idx, replacement_string.as_ref().unwrap_or(&text), &state.line_infos, font)
                 .unwrap_or_else(|| {
                     let x = rect.left();
                     let y = Range::new(0.0, font_size as Scalar).align_to(y_align, rect.y);
@@ -839,7 +862,7 @@ impl<'a> Widget for TextEdit<'a> {
 
             let selected_rects: Vec<Rect> = {
                 let line_infos = state.line_infos.iter().cloned();
-                let lines = line_infos.clone().map(|info| &text[info.byte_range()]);
+                let lines = line_infos.clone().map(|info| &replacement_string.as_ref().unwrap_or(&text)[info.byte_range()]);
                 let line_rects = text::line::rects(line_infos.clone(), font_size, rect,
                                                    justify, y_align, line_spacing);
                 let lines_with_rects = lines.zip(line_rects.clone());
@@ -866,6 +889,7 @@ impl<'a> Widget for TextEdit<'a> {
                     .set(selected_rectangle_id, ui);
             }
         }
+
 
         take_if_owned(text)
     }
