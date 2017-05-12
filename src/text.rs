@@ -521,7 +521,7 @@ pub mod cursor {
         /// If `self` is at the beginning of the line, call previous, which returns the last
         /// index position of the previous line, or None if it's the first line
         ///
-        /// If `self` points to whitespace, skip past that whitespace, then return the index of 
+        /// If `self` points to whitespace, skip past that whitespace, then return the index of
         /// the start of the word that precedes the whitespace
         ///
         /// If `self` is in the middle or end of a word, return the index of the start of that word
@@ -560,7 +560,7 @@ pub mod cursor {
         /// If `self` is at the end of a line other than the last, this returns the first index of
         /// the next line.
         ///
-        /// If `self` points to whitespace, skip past that whitespace, then return the index of 
+        /// If `self` points to whitespace, skip past that whitespace, then return the index of
         /// the end of the word after the whitespace
         ///
         /// If `self` is in the middle or start of a word, return the index of the end of that word
@@ -955,7 +955,7 @@ pub mod line {
         last_break: Option<Break>,
     }
 
-    /// An iterator yielding a `Rect` for each line in 
+    /// An iterator yielding a `Rect` for each line in
     #[derive(Clone)]
     pub struct Rects<I> {
         infos: I,
@@ -1487,4 +1487,179 @@ pub mod line {
         }
     }
 
+}
+
+/// Logic related to displaying multiple lines of text and accepting text input.
+pub mod display {
+    use num::iter::Range;
+    use {std, FontSize, Scalar, Rect, Point, Wrap, Cursor};
+    use position::Align;
+    use super::{cursor, line, glyph, Justify, Font};
+
+    /// See [`line_infos`](fn.line_infos.html).
+    pub type LineInfos<'a> = line::Infos<'a, line::NextBreakFnPtr>;
+
+    /// Returns an iterator yielding the `line::Info` for each line in the given text
+    /// with the given styling.
+    pub fn line_infos<'a>(&self, text: &'a str,
+                      font: &'a Font,
+                      font_size: FontSize,
+                      line_wrap: Wrap,
+                      max_width: Scalar) -> LineInfos<'a>
+    {
+        let infos = line::infos(text, font, font_size);
+        match line_wrap {
+            Wrap::Whitespace => infos.wrap_by_whitespace(max_width),
+            Wrap::Character => infos.wrap_by_character(max_width),
+        }
+    }
+    /// Returns an iterator yielding the `line::Info` for each line in the given text
+    /// with the given styling.
+    pub type LineInfos<'a> = line::Infos<'a, line::NextBreakFnPtr>;
+
+    pub struct TextDisplay {
+        /// The font size for the text.
+        pub font_size: FontSize,
+        /// The horizontal alignment of the text.
+        pub justify: Justify,
+        /// The vertical alignment of the text.
+        pub y_align: Align,
+        /// The vertical space between each line of text.
+        pub line_spacing: Scalar,
+        /// The size of the text display.
+        pub rect: Rect,
+    }
+
+    impl TextDisplay {
+        /// Find the position of the cursor at the given index over the given text.
+        pub fn cursor_xy_at(&self,
+                            font: &Font,
+                            text: &str,
+                            line_infos: &[line::Info],
+                            cursor_idx: cursor::Index,)
+            -> Option<(Scalar, Range)>
+        {
+            let xys_per_line = cursor::xys_per_line_from_text(text, line_infos, font,
+                                                              self.font_size, self.justify, self.y_align,
+                                                              self.line_spacing, self.rect);
+            cursor::xy_at(xys_per_line, cursor_idx)
+        }
+
+        /// Find the closest cursor index to the given `xy` position.
+        ///
+        /// Returns `None` if the given `text` is empty.
+        pub fn closest_cursor_index_and_xy(&self,
+                                           font: &Font,
+                                           text: &str,
+                                           line_infos: &[line::Info],
+                                           xy: Point)
+            -> Option<(cursor::Index, Point)>
+        {
+            let xys_per_line = cursor::xys_per_line_from_text(text, line_infos, font,
+                                                                    self.font_size, self.justify, self.y_align,
+                                                                    self.line_spacing, self.rect);
+            cursor::closest_cursor_index_and_xy(xy, xys_per_line)
+        }
+
+        /// Find the closest cursor index to the given `x` position over the given line.
+        pub fn closest_cursor_index_on_line(&self, font: &Font,
+                                            text: &str,
+                                            line_infos: &[line::Info],
+                                            x_pos: Scalar,
+                                            line_idx: usize)
+            -> Option<cursor::Index>
+        {
+            let mut xys_per_line = cursor::xys_per_line_from_text(text, line_infos, font,
+                                                                        self.font_size, self.justify, self.y_align,
+                                                                        self.line_spacing, self.rect);
+            xys_per_line.nth(line_idx).and_then(|(line_xs,_)| {
+                let (char_idx,_) = cursor::closest_cursor_index_on_line(x_pos,line_xs);
+                Some(cursor::Index { line: line_idx, char: char_idx })
+            })
+        }
+
+        /// Insert the given `string` at the given `cursor` position within the given `text`.
+        ///
+        /// Produces the resulting text, cursor position and `line::Info`s for the new text.
+        ///
+        /// Returns `None` if the new text would exceed the height restriction.
+        pub fn insert_text_at(&self,
+                              font: &Font,
+                              text: &str,
+                              line_infos: &[line::Info],
+                              cursor: Cursor,
+                              string: &str)
+            -> Option<(String, Cursor, std::vec::Vec<line::Info>)>
+        {
+            let string_char_count = string.chars().count();
+
+            // Construct the new text with the new string inserted at the cursor.
+            let (new_text, new_cursor_char_idx): (String, usize) = {
+                let (cursor_start, cursor_end) = match cursor {
+                    Cursor::Idx(idx) => (idx, idx),
+                    Cursor::Selection { start, end } =>
+                        (std::cmp::min(start, end), std::cmp::max(start, end)),
+                };
+
+                let line_infos = infos.iter().cloned();
+
+                let (start_idx, end_idx) =
+                    (glyph::index_after_cursor(line_infos.clone(), cursor_start)
+                        .unwrap_or(0),
+                     glyph::index_after_cursor(line_infos.clone(), cursor_end)
+                        .unwrap_or(0));
+
+                let new_cursor_char_idx = start_idx + string_char_count;
+
+                let new_text = text.chars().take(start_idx)
+                    .chain(string.chars())
+                    .chain(text.chars().skip(end_idx))
+                    .collect();
+                (new_text, new_cursor_char_idx)
+            };
+
+            // Calculate the new `line_infos` for the `new_text`.
+            let new_line_infos: Vec<_> = {
+                line_infos(&new_text, font, self.font_size, line_wrap, self.rect.w()).collect()
+            };
+
+            // Check that the new text would not exceed the `inner_rect` bounds.
+            let num_lines = new_line_infos.len();
+            let height = height(num_lines, self.font_size, self.line_spacing);
+            if height < self.rect.h() || !restrict_to_height {
+
+                // Determine the new `Cursor` and its position.
+                let new_cursor_idx = {
+                    let line_infos = new_line_infos.iter().cloned();
+                    cursor::index_before_char(line_infos, new_cursor_char_idx)
+                        .unwrap_or(cursor::Index {
+                            line: 0,
+                            char: string_char_count,
+                        })
+                };
+
+                Some((new_text, Cursor::Idx(new_cursor_idx), new_line_infos))
+            } else {
+                None
+            }
+        }
+
+        pub fn selection_display_rects(&self,
+                                       font: &font,
+                                       text: &str,
+                                       line_infos: &[line::Info],
+                                       start: cursor::Index,
+                                       end: cursor::Index)
+                -> Vec<Rect> {
+            let (start, end) = (std::cmp::min(start, end), std::cmp::max(start, end));
+
+            let line_infos_iter = line_infos.iter().cloned();
+            let lines = line_infos_iter.clone().map(|info| &text[info.byte_range()]);
+            let line_rects = line::rects(line_infos_iter, self.font_size, self.rect,
+                                         self.justify, self.y_align, self.line_spacing);
+            let lines_with_rects = lines.zip(line_rects.clone());
+            let font = ui.fonts.get(font_id).unwrap();
+            line::selected_rects(lines_with_rects, font, self.font_size, start, end).collect()
+        }
+    }
 }
