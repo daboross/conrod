@@ -37,6 +37,7 @@ impl Range {
     ///
     /// assert_eq!(Range { start: 0.0, end: 10.0 }, Range::new(0.0, 10.0));
     /// ```
+    #[inline]
     pub fn new(start: Scalar, end: Scalar) -> Range {
         Range {
             start: start,
@@ -55,6 +56,7 @@ impl Range {
     /// assert_eq!(Range::new(-5.0, 1.0), Range::from_pos_and_len(-2.0, 6.0));
     /// assert_eq!(Range::new(-100.0, 200.0), Range::from_pos_and_len(50.0, 300.0));
     /// ```
+    #[inline]
     pub fn from_pos_and_len(pos: Scalar, len: Scalar) -> Range {
         let half_len = len / 2.0;
         let start = pos - half_len;
@@ -73,6 +75,7 @@ impl Range {
     /// assert_eq!(Range::new(5.0, -5.0).magnitude(), -10.0);
     /// assert_eq!(Range::new(15.0, 10.0).magnitude(), -5.0);
     /// ```
+    #[inline]
     pub fn magnitude(&self) -> Scalar {
         self.end - self.start
     }
@@ -88,6 +91,7 @@ impl Range {
     /// assert_eq!(Range::new(5.0, -5.0).len(), 10.0);
     /// assert_eq!(Range::new(15.0, 10.0).len(), 5.0);
     /// ```
+    #[inline]
     pub fn len(&self) -> Scalar {
         self.magnitude().abs()
     }
@@ -105,6 +109,7 @@ impl Range {
     /// assert_eq!(Range::new(20.0, 40.0).middle(), 30.0);
     /// assert_eq!(Range::new(20.0, -40.0).middle(), -10.0);
     /// ```
+    #[inline]
     pub fn middle(&self) -> Scalar {
         (self.end + self.start) / 2.0
     }
@@ -121,6 +126,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 7.25).invert(), Range::new(7.25, 0.0));
     /// assert_eq!(Range::new(5.0, 1.0).invert(), Range::new(1.0, 5.0));
     /// ```
+    #[inline]
     pub fn invert(self) -> Range {
         Range { start: self.end, end: self.start }
     }
@@ -148,6 +154,7 @@ impl Range {
     /// assert_eq!(a.map_value_to(-5.0, &c), 30.0);
     /// assert_eq!(a.map_value_to(10.0, &c), -30.0);
     /// ```
+    #[inline]
     pub fn map_value_to(&self, value: Scalar, other: &Range) -> Scalar {
         ::utils::map_range(value, self.start, self.end, other.start, other.end)
     }
@@ -163,6 +170,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 5.0).shift(-5.0), Range::new(-5.0, 0.0));
     /// assert_eq!(Range::new(5.0, -5.0).shift(-5.0), Range::new(0.0, -10.0));
     /// ```
+    #[inline]
     pub fn shift(self, amount: Scalar) -> Range {
         Range { start: self.start + amount, end: self.end + amount }
     }
@@ -178,6 +186,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 0.0).direction(), 0.0);
     /// assert_eq!(Range::new(0.0, -5.0).direction(), -1.0);
     /// ```
+    #[inline]
     pub fn direction(&self) -> Scalar {
         if      self.start < self.end { 1.0 }
         else if self.start > self.end { -1.0 }
@@ -197,6 +206,7 @@ impl Range {
     /// assert_eq!(Range::new(5.0, 1.0).undirected(), Range::new(1.0, 5.0));
     /// assert_eq!(Range::new(10.0, -10.0).undirected(), Range::new(-10.0, 10.0));
     /// ```
+    #[inline]
     pub fn undirected(self) -> Range {
         if self.start > self.end { self.invert() } else { self }
     }
@@ -218,6 +228,7 @@ impl Range {
     /// let d = Range::new(5.0, -7.5);
     /// assert_eq!(c.max(d), Range::new(-30.0, 5.0));
     /// ```
+    #[inline]
     pub fn max(self, other: Self) -> Range {
         let start = self.start.min(self.end).min(other.start).min(other.end);
         let end = self.start.max(self.end).max(other.start).max(other.end);
@@ -300,6 +311,7 @@ impl Range {
     /// assert!(range.is_over(0.0));
     /// assert!(range.is_over(10.0));
     /// ```
+    #[inline]
     pub fn is_over(&self, pos: Scalar) -> bool {
         let Range { start, end } = self.undirected();
         pos >= start && pos <= end
@@ -315,6 +327,7 @@ impl Range {
     /// assert_eq!(Range::new(0.25, 9.5).round(), Range::new(0.0, 10.0));
     /// assert_eq!(Range::new(4.95, -5.3).round(), Range::new(5.0, -5.0));
     /// ```
+    #[inline]
     pub fn round(self) -> Range {
         Range::new(self.start.round(), self.end.round())
     }
@@ -329,6 +342,7 @@ impl Range {
     /// assert_eq!(Range::new(0.25, 9.5).floor(), Range::new(0.0, 9.0));
     /// assert_eq!(Range::new(4.95, -5.3).floor(), Range::new(4.0, -6.0));
     /// ```
+    #[inline]
     pub fn floor(self) -> Range {
         Range::new(self.start.floor(), self.end.floor())
     }
@@ -343,6 +357,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 10.0).pad_start(2.0), Range::new(2.0, 10.0));
     /// assert_eq!(Range::new(10.0, 0.0).pad_start(2.0), Range::new(8.0, 0.0));
     /// ```
+    #[inline]
     pub fn pad_start(mut self, pad: Scalar) -> Range {
         self.start += if self.start <= self.end { pad } else { -pad };
         self
@@ -358,6 +373,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 10.0).pad_end(2.0), Range::new(0.0, 8.0));
     /// assert_eq!(Range::new(10.0, 0.0).pad_end(2.0), Range::new(10.0, 2.0));
     /// ```
+    #[inline]
     pub fn pad_end(mut self, pad: Scalar) -> Range {
         self.end += if self.start <= self.end { -pad } else { pad };
         self
@@ -373,6 +389,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 10.0).pad(2.0), Range::new(2.0, 8.0));
     /// assert_eq!(Range::new(10.0, 0.0).pad(2.0), Range::new(8.0, 2.0));
     /// ```
+    #[inline]
     pub fn pad(self, pad: Scalar) -> Range {
         self.pad_start(pad).pad_end(pad)
     }
@@ -387,6 +404,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 10.0).pad_ends(1.0, 2.0), Range::new(1.0, 8.0));
     /// assert_eq!(Range::new(10.0, 0.0).pad_ends(4.0, 3.0), Range::new(6.0, 3.0));
     /// ```
+    #[inline]
     pub fn pad_ends(self, start: Scalar, end: Scalar) -> Range {
         self.pad_start(start).pad_end(end)
     }
@@ -402,6 +420,7 @@ impl Range {
     /// assert_eq!(Range::new(5.0, -2.5).clamp_value(-3.0), -2.5);
     /// assert_eq!(Range::new(5.0, 10.0).clamp_value(0.0), 5.0);
     /// ```
+    #[inline]
     pub fn clamp_value(&self, value: Scalar) -> Scalar {
         ::utils::clamp(value, self.start, self.end)
     }
@@ -423,6 +442,7 @@ impl Range {
     /// assert_eq!(b.stretch_to_value(10.0), Range::new(10.0, -5.0));
     /// assert_eq!(b.stretch_to_value(-10.0), Range::new(0.0, -10.0));
     /// ```
+    #[inline]
     pub fn stretch_to_value(self, value: Scalar) -> Range {
         let Range { start, end } = self;
         if start <= end {
@@ -455,6 +475,7 @@ impl Range {
     /// assert!(Range::new(0.0, -5.0).has_same_direction(Range::new(-2.5, -6.0)));
     /// assert!(!Range::new(0.0, 5.0).has_same_direction(Range::new(2.5, -2.5)));
     /// ```
+    #[inline]
     pub fn has_same_direction(self, other: Self) -> bool {
         let self_direction = self.start <= self.end;
         let other_direction = other.start <= other.end;
@@ -481,6 +502,7 @@ impl Range {
     /// assert_eq!(c.align_start_of(d), Range::new(0.0, -5.0));
     /// assert_eq!(d.align_start_of(c), Range::new(-7.5, 2.5));
     /// ```
+    #[inline]
     pub fn align_start_of(self, other: Self) -> Self {
         let diff = if self.has_same_direction(other) {
             other.start - self.start
@@ -510,6 +532,7 @@ impl Range {
     /// assert_eq!(c.align_end_of(d), Range::new(5.0, 0.0));
     /// assert_eq!(d.align_end_of(c), Range::new(-2.5, 7.5));
     /// ```
+    #[inline]
     pub fn align_end_of(self, other: Self) -> Self {
         let diff = if self.has_same_direction(other) {
             other.end - self.end
@@ -536,6 +559,7 @@ impl Range {
     /// assert_eq!(c.align_middle_of(d), Range::new(-2.5, -7.5));
     /// assert_eq!(d.align_middle_of(c), Range::new(-5.0, 5.0));
     /// ```
+    #[inline]
     pub fn align_middle_of(self, other: Self) -> Self {
         let diff = other.middle() - self.middle();
         self.shift(diff)
@@ -560,6 +584,7 @@ impl Range {
     /// assert_eq!(c.align_after(d), Range::new(10.0, 5.0));
     /// assert_eq!(d.align_after(c), Range::new(-12.5, -2.5));
     /// ```
+    #[inline]
     pub fn align_after(self, other: Self) -> Self {
         let diff = if self.has_same_direction(other) {
             other.end - self.start
@@ -588,6 +613,7 @@ impl Range {
     /// assert_eq!(c.align_before(d), Range::new(-5.0, -10.0));
     /// assert_eq!(d.align_before(c), Range::new(2.5, 12.5));
     /// ```
+    #[inline]
     pub fn align_before(self, other: Self) -> Self {
         let diff = if self.has_same_direction(other) {
             other.start - self.end
@@ -598,6 +624,7 @@ impl Range {
     }
 
     /// Align `self` to `other` along the *x* axis in accordance with the given `Align` variant.
+    #[inline]
     pub fn align_to(self, align: super::Align, other: Self) -> Self {
         match align {
             super::Align::Start => self.align_start_of(other),
@@ -619,6 +646,7 @@ impl Range {
     /// assert_eq!(Range::new(0.0, 10.0).closest_edge(7.0), Edge::End);
     /// assert_eq!(Range::new(0.0, 10.0).closest_edge(5.0), Edge::Start);
     /// ```
+    #[inline]
     pub fn closest_edge(&self, scalar: Scalar) -> Edge {
         let Range { start, end } = *self;
         let start_diff = if scalar < start { start - scalar } else { scalar - start };

@@ -46,6 +46,7 @@ pub enum Kind {
 impl<I> Polygon<I> {
 
     /// Build a polygon with the given points and style.
+    #[inline]
     pub fn styled(points: I, style: Style) -> Self {
         Polygon {
             points: points,
@@ -56,21 +57,25 @@ impl<I> Polygon<I> {
     }
 
     /// Build a **Polygon** with the default **Fill** style.
+    #[inline]
     pub fn fill(points: I) -> Self {
         Polygon::styled(points, Style::fill())
     }
 
     /// Build a **Polygon** **Fill**ed with the given **Color**.
+    #[inline]
     pub fn fill_with(points: I, color: Color) -> Self {
         Polygon::styled(points, Style::fill_with(color))
     }
 
     /// Build a **Polygon** with the default **Outline** style.
+    #[inline]
     pub fn outline(points: I) -> Self {
         Polygon::styled(points, Style::outline())
     }
 
     /// Build a **Polygon** **Outline**ed with the given line style.
+    #[inline]
     pub fn outline_styled(points: I, style: widget::line::Style) -> Self {
         Polygon::styled(points, Style::outline_styled(style))
     }
@@ -83,6 +88,7 @@ impl<I> Polygon<I> {
     ///
     /// If you would rather centre the points to the middle of the bounding box, use
     /// the [**Polygon::centred**](./struct.Polygon#method.centred) methods instead.
+    #[inline]
     pub fn abs_styled(points: I, style: Style) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -93,6 +99,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::abs_styled**](./struct.Polygon#method.abs_styled) but builds the
     /// **Polygon** with the default **Fill** style.
+    #[inline]
     pub fn abs_fill(points: I) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -101,6 +108,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::abs_styled**](./struct.Polygon#method.abs_styled) but builds the
     /// **Polygon** **Fill**ed with the given **Color**.
+    #[inline]
     pub fn abs_fill_with(points: I, color: Color) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -109,6 +117,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::abs_styled**](./struct.Polygon#method.abs_styled) but builds the
     /// **Polygon** with the default **Outline** style.
+    #[inline]
     pub fn abs_outline(points: I) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -117,6 +126,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::abs_styled**](./struct.Polygon#method.abs_styled) but builds the
     /// **Polygon** with the given **Outline** styling.
+    #[inline]
     pub fn abs_outline_styled(points: I, style: widget::line::Style) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -131,6 +141,7 @@ impl<I> Polygon<I> {
     ///
     /// If you would rather centre the bounding box to the points, use the
     /// [**Polygon::abs**](./struct.Polygon#method.abs) constructor method instead.
+    #[inline]
     pub fn centred_styled(points: I, style: Style) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -143,6 +154,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::centred_styled**](./struct.Polygon#method.centred_styled) but
     /// constructs the **Polygon** with the default **Fill** style.
+    #[inline]
     pub fn centred_fill(points: I) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -151,6 +163,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::centred_styled**](./struct.Polygon#method.centred_styled) but
     /// constructs the **Polygon** **Fill**ed with the given color.
+    #[inline]
     pub fn centred_fill_with(points: I, color: Color) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -159,6 +172,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::centred_styled**](./struct.Polygon#method.centred_styled) but
     /// constructs the **Polygon** with the default **Outline** style.
+    #[inline]
     pub fn centred_outline(points: I) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -167,6 +181,7 @@ impl<I> Polygon<I> {
 
     /// The same as [**Polygon::centred_styled**](./struct.Polygon#method.centred_styled) but
     /// constructs the **Polygon** **Outline**d with the given styling.
+    #[inline]
     pub fn centred_outline_styled(points: I, style: widget::line::Style) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -183,14 +198,17 @@ impl<I> Widget for Polygon<I>
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, _: widget::id::Generator) -> Self::State {
         State {
             kind: Kind::Fill,
@@ -198,6 +216,7 @@ impl<I> Widget for Polygon<I>
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -250,6 +269,7 @@ impl<I> Widget for Polygon<I>
 
 
 impl<I> Colorable for Polygon<I> {
+    #[inline]
     fn color(mut self, color: Color) -> Self {
         self.style.set_color(color);
         self

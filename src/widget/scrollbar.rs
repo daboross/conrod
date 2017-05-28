@@ -67,6 +67,7 @@ pub struct State {
 impl<A> Scrollbar<A> {
 
     /// Begin building a new scrollbar widget.
+    #[inline]
     fn new(widget: widget::Id) -> Self {
         Scrollbar {
             common: widget::CommonBuilder::new(),
@@ -85,6 +86,7 @@ impl<A> Scrollbar<A> {
     /// - The target scrollable widget is actually scrollable and:
     /// - The target scrollable widget is being scrolled.
     /// - The scrollbar is capturing the mouse.
+    #[inline]
     pub fn auto_hide(mut self, auto_hide: bool) -> Self {
         self.style.auto_hide = Some(auto_hide);
         self
@@ -95,6 +97,7 @@ impl<A> Scrollbar<A> {
     /// This value sets the width of vertical scrollbars, or the height of horizontal scrollbars.
     ///
     /// By default, this is `10.0`.
+    #[inline]
     pub fn thickness(mut self, thickness: Scalar) -> Self {
         self.style.thickness = Some(thickness);
         self
@@ -106,6 +109,7 @@ impl Scrollbar<X> {
 
     /// Begin building a new scrollbar widget that scrolls along the *X* axis along the range of
     /// the scrollable widget at the given Id.
+    #[inline]
     pub fn x_axis(widget: widget::Id) -> Self {
         Scrollbar::new(widget)
             .align_middle_x_of(widget)
@@ -118,6 +122,7 @@ impl Scrollbar<Y> {
 
     /// Begin building a new scrollbar widget that scrolls along the *Y* axis along the range of
     /// the scrollable widget at the given Id.
+    #[inline]
     pub fn y_axis(widget: widget::Id) -> Self {
         Scrollbar::new(widget)
             .align_middle_y_of(widget)
@@ -133,28 +138,34 @@ impl<A> Widget for Scrollbar<A>
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
 
+    #[inline]
     fn default_x_dimension(&self, ui: &Ui) -> Dimension {
         A::default_x_dimension(self, ui)
     }
 
+    #[inline]
     fn default_y_dimension(&self, ui: &Ui) -> Dimension {
         A::default_y_dimension(self, ui)
     }
@@ -288,6 +299,7 @@ impl<A> Widget for Scrollbar<A>
 
 impl Axis for X {
 
+    #[inline]
     fn track_rect(container: Rect, thickness: Scalar) -> Rect {
         let h = thickness;
         let w = container.w();
@@ -295,6 +307,7 @@ impl Axis for X {
         Rect::from_xy_dim([x, 0.0], [w, h]).align_bottom_of(container)
     }
 
+    #[inline]
     fn handle_rect(perpendicular_track_range: Range, handle_range: Range) -> Rect {
         Rect {
             x: handle_range,
@@ -302,18 +315,22 @@ impl Axis for X {
         }
     }
 
+    #[inline]
     fn scroll_state(widget: &graph::Container) -> Option<&scroll::State<Self>> {
         widget.maybe_x_scroll_state.as_ref()
     }
 
+    #[inline]
     fn default_x_dimension(scrollbar: &Scrollbar<Self>, _ui: &Ui) -> Dimension {
         Dimension::Of(scrollbar.widget, None)
     }
 
+    #[inline]
     fn default_y_dimension(scrollbar: &Scrollbar<Self>, ui: &Ui) -> Dimension {
         Dimension::Absolute(scrollbar.style.thickness(&ui.theme))
     }
 
+    #[inline]
     fn to_2d(scalar: Scalar) -> [Scalar; 2] {
         [scalar, 0.0]
     }
@@ -322,6 +339,7 @@ impl Axis for X {
 
 impl Axis for Y {
 
+    #[inline]
     fn track_rect(container: Rect, thickness: Scalar) -> Rect {
         let w = thickness;
         let h = container.h();
@@ -329,6 +347,7 @@ impl Axis for Y {
         Rect::from_xy_dim([0.0, y], [w, h]).align_right_of(container)
     }
 
+    #[inline]
     fn handle_rect(perpendicular_track_range: Range, handle_range: Range) -> Rect {
         Rect {
             x: perpendicular_track_range,
@@ -336,18 +355,22 @@ impl Axis for Y {
         }
     }
 
+    #[inline]
     fn scroll_state(widget: &graph::Container) -> Option<&scroll::State<Self>> {
         widget.maybe_y_scroll_state.as_ref()
     }
 
+    #[inline]
     fn default_x_dimension(scrollbar: &Scrollbar<Self>, ui: &Ui) -> Dimension {
         Dimension::Absolute(scrollbar.style.thickness(&ui.theme))
     }
 
+    #[inline]
     fn default_y_dimension(scrollbar: &Scrollbar<Self>, _ui: &Ui) -> Dimension {
         Dimension::Of(scrollbar.widget, None)
     }
 
+    #[inline]
     fn to_2d(scalar: Scalar) -> [Scalar; 2] {
         [0.0, scalar]
     }

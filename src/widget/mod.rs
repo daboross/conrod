@@ -161,6 +161,7 @@ impl MaybeParent {
     /// **Note:** This method does not check whether or not using the `window` widget as the parent
     /// would cause a cycle. If it is important that the inferred parent should not cause a cycle,
     /// use `get` instead.
+    #[inline]
     pub fn get_unchecked(&self, ui: &Ui, x_pos: Position, y_pos: Position) -> Id {
         match *self {
             MaybeParent::Some(id) => id,
@@ -171,6 +172,7 @@ impl MaybeParent {
 
     /// The same as `get_unchecked`, but checks whether or not the widget that we're inferring the
     /// parent for is the `Ui`'s window (which cannot have a parent, without creating a cycle).
+    #[inline]
     pub fn get(&self, id: Id, ui: &Ui, x_pos: Position, y_pos: Position) -> Option<Id> {
         if id == ui.window {
             None
@@ -384,6 +386,7 @@ fn default_dimension<W, F>(widget: &W, ui: &Ui, f: F) -> Dimension
 ///
 /// If you wish to override **Widget::default_x_dimension**, feel free to call this function
 /// internally if you partly require the bahaviour of the default implementations.
+#[inline]
 pub fn default_x_dimension<W>(widget: &W, ui: &Ui) -> Dimension
     where W: Widget,
 {
@@ -402,6 +405,7 @@ pub fn default_x_dimension<W>(widget: &W, ui: &Ui) -> Dimension
 ///
 /// If you wish to override **Widget::default_y_dimension**, feel free to call this function
 /// internally if you partly require the bahaviour of the default implementations.
+#[inline]
 pub fn default_y_dimension<W>(widget: &W, ui: &Ui) -> Dimension
     where W: Widget,
 {
@@ -565,6 +569,7 @@ pub trait Widget: Sized {
     /// The default **Position** for the widget along the *x* axis.
     ///
     /// This is used when no **Position** is explicitly given when instantiating the Widget.
+    #[inline]
     fn default_x_position(&self, ui: &Ui) -> Position {
         ui.theme.widget_style::<Self::Style>()
             .and_then(|style| style.common.maybe_x_position)
@@ -574,6 +579,7 @@ pub trait Widget: Sized {
     /// The default **Position** for the widget along the *y* axis.
     ///
     /// This is used when no **Position** is explicitly given when instantiating the Widget.
+    #[inline]
     fn default_y_position(&self, ui: &Ui) -> Position {
         ui.theme.widget_style::<Self::Style>()
             .and_then(|style| style.common.maybe_y_position)
@@ -586,6 +592,7 @@ pub trait Widget: Sized {
     ///
     /// By default, this simply calls [**default_dimension**](./fn.default_dimension) with a
     /// fallback absolute dimension of 0.0.
+    #[inline]
     fn default_x_dimension(&self, ui: &Ui) -> Dimension {
         default_x_dimension(self, ui)
     }
@@ -594,12 +601,14 @@ pub trait Widget: Sized {
     ///
     /// By default, this simply calls [**default_dimension**](./fn.default_dimension) with a
     /// fallback absolute dimension of 0.0.
+    #[inline]
     fn default_y_dimension(&self, ui: &Ui) -> Dimension {
         default_y_dimension(self, ui)
     }
 
     /// If the widget is draggable, implement this method and return the position and dimensions of
     /// the draggable space. The position should be relative to the center of the widget.
+    #[inline]
     fn drag_area(&self,
                  _dim: Dimensions,
                  _style: &Self::Style,
@@ -609,6 +618,7 @@ pub trait Widget: Sized {
     }
 
     /// The area on which child widgets will be placed when using the `Place` `Position` methods.
+    #[inline]
     fn kid_area(&self, args: KidAreaArgs<Self>) -> KidArea {
         KidArea {
             rect: args.rect,
@@ -626,12 +636,14 @@ pub trait Widget: Sized {
     /// Set the parent widget for this Widget by passing the WidgetId of the parent.
     ///
     /// This will attach this Widget to the parent widget.
+    #[inline]
     fn parent(mut self, parent_id: Id) -> Self {
         self.common_mut().maybe_parent_id = MaybeParent::Some(parent_id);
         self
     }
 
     /// Specify that this widget has no parent widgets.
+    #[inline]
     fn no_parent(mut self) -> Self {
         self.common_mut().maybe_parent_id = MaybeParent::None;
         self
@@ -647,6 +659,7 @@ pub trait Widget: Sized {
     /// By default, conrod will automatically determine this for you by checking whether or not the
     /// **Widget** that our **Widget** is being placed upon returns `Some` from its
     /// **Widget::kid_area** method.
+    #[inline]
     fn place_on_kid_area(mut self, b: bool) -> Self {
         self.common_mut().place_on_kid_area = b;
         self
@@ -667,6 +680,7 @@ pub trait Widget: Sized {
     /// - *b* will always be placed upon *a*'s total area, rather than its kid_area which is the
     /// default.
     /// - Any **Graphic** child of *b* will be considered as a **Graphic** child of *a*.
+    #[inline]
     fn graphics_for(mut self, id: Id) -> Self {
         self.common_mut().maybe_graphics_for = Some(id);
         self
@@ -679,6 +693,7 @@ pub trait Widget: Sized {
     /// connected to its parent tree. If two sibling widgets are both floating, then the one that
     /// was last clicked will be rendered last. If neither are clicked, they will be rendered in
     /// the order in which they were cached into the `Ui`.
+    #[inline]
     fn floating(mut self, is_floating: bool) -> Self {
         self.common_mut().is_floating = is_floating;
         self
@@ -686,6 +701,7 @@ pub trait Widget: Sized {
 
     /// Indicates that all widgets who are children of this widget should be cropped to the
     /// `kid_area` of this widget.
+    #[inline]
     fn crop_kids(mut self) -> Self {
         self.common_mut().crop_kids = true;
         self
@@ -697,6 +713,7 @@ pub trait Widget: Sized {
     /// the `KidArea` will become scrollable.
     ///
     /// This method calls `Widget::crop_kids` internally.
+    #[inline]
     fn scroll_kids(self) -> Self {
         self.scroll_kids_vertically().scroll_kids_horizontally().crop_kids()
     }
@@ -707,6 +724,7 @@ pub trait Widget: Sized {
     /// the `KidArea` will become scrollable.
     ///
     /// This method calls `Widget::crop_kids` internally.
+    #[inline]
     fn scroll_kids_vertically(mut self) -> Self {
         self.common_mut().maybe_y_scroll = Some(scroll::Scroll::new());
         self.crop_kids()
@@ -718,6 +736,7 @@ pub trait Widget: Sized {
     /// the `KidArea` will become scrollable.
     ///
     /// This method calls `Widget::crop_kids` internally.
+    #[inline]
     fn scroll_kids_horizontally(mut self) -> Self {
         self.common_mut().maybe_x_scroll = Some(scroll::Scroll::new());
         self.crop_kids()
@@ -780,6 +799,7 @@ pub trait Widget: Sized {
     /// - If the widget's state or style has changed, the **Ui** will be notified that the widget
     /// needs to be re-drawn.
     /// - The new State and Style will be cached within the `Ui`.
+    #[inline]
     fn set<'a, 'b>(self, id: Id, ui_cell: &'a mut UiCell<'b>) -> Self::Event {
         set_widget(self, id, ui_cell)
     }
@@ -1107,6 +1127,7 @@ impl<'a, T> State<'a, T> {
     /// If this method *is* called, we assume that there has been some mutation and in turn will
     /// need to re-draw the Widget. Thus, it is recommended that you *only* call this method if you
     /// need to update the unique state in some way.
+    #[inline]
     pub fn update<F>(&mut self, f: F) where F: FnOnce(&mut T) {
         self.has_updated = true;
         f(self.state);
@@ -1116,6 +1137,7 @@ impl<'a, T> State<'a, T> {
 
 impl<'a, T> std::ops::Deref for State<'a, T> {
     type Target = T;
+    #[inline]
     fn deref(&self) -> &T {
         &self.state
     }
@@ -1124,6 +1146,7 @@ impl<'a, T> std::ops::Deref for State<'a, T> {
 
 impl CommonBuilder {
     /// Construct an empty, initialised CommonBuilder.
+    #[inline]
     pub fn new() -> CommonBuilder {
         CommonBuilder {
             style: CommonStyle::new(),
@@ -1140,6 +1163,7 @@ impl CommonBuilder {
 
 impl CommonStyle {
     /// A new default CommonStyle.
+    #[inline]
     pub fn new() -> Self {
         CommonStyle {
             maybe_x_dimension: None,
@@ -1155,14 +1179,17 @@ impl CommonStyle {
 impl<W> Positionable for W
     where W: Widget,
 {
+    #[inline]
     fn x_position(mut self, x: Position) -> Self {
         self.common_mut().style.maybe_x_position = Some(x);
         self
     }
+    #[inline]
     fn y_position(mut self, y: Position) -> Self {
         self.common_mut().style.maybe_y_position = Some(y);
         self
     }
+    #[inline]
     fn get_x_position(&self, ui: &Ui) -> Position {
         let from_y_position = || self.common().style.maybe_y_position
             .and_then(|y_pos| infer_position_from_other_position(y_pos, Align::Start));
@@ -1170,6 +1197,7 @@ impl<W> Positionable for W
             .or_else(from_y_position)
             .unwrap_or(self.default_x_position(ui))
     }
+    #[inline]
     fn get_y_position(&self, ui: &Ui) -> Position {
         let from_x_position = || self.common().style.maybe_x_position
             .and_then(|x_pos| infer_position_from_other_position(x_pos, Align::End));
@@ -1177,10 +1205,12 @@ impl<W> Positionable for W
             .or_else(from_x_position)
             .unwrap_or(self.default_y_position(ui))
     }
+    #[inline]
     fn depth(mut self, depth: Depth) -> Self {
         self.common_mut().style.maybe_depth = Some(depth);
         self
     }
+    #[inline]
     fn get_depth(&self) -> Depth {
         const DEFAULT_DEPTH: Depth = 0.0;
         self.common().style.maybe_depth.unwrap_or(DEFAULT_DEPTH)
@@ -1209,10 +1239,12 @@ fn infer_position_from_other_position(other_pos: Position, dir_align: Align) -> 
 impl<W> Sizeable for W
     where W: Widget,
 {
+    #[inline]
     fn x_dimension(mut self, w: Dimension) -> Self {
         self.common_mut().style.maybe_x_dimension = Some(w);
         self
     }
+    #[inline]
     fn y_dimension(mut self, h: Dimension) -> Self {
         self.common_mut().style.maybe_y_dimension = Some(h);
         self
@@ -1220,12 +1252,14 @@ impl<W> Sizeable for W
     /// We attempt to retrieve the `x` **Dimension** for the widget via the following:
     /// - Check for specified value at `maybe_x_dimension`
     /// - Otherwise, use the default returned by **Widget::default_x_dimension**.
+    #[inline]
     fn get_x_dimension(&self, ui: &Ui) -> Dimension {
         self.common().style.maybe_x_dimension.unwrap_or_else(|| self.default_x_dimension(ui))
     }
     /// We attempt to retrieve the `y` **Dimension** for the widget via the following:
     /// - Check for specified value at `maybe_y_dimension`
     /// - Otherwise, use the default returned by **Widget::default_y_dimension**.
+    #[inline]
     fn get_y_dimension(&self, ui: &Ui) -> Dimension {
         self.common().style.maybe_y_dimension.unwrap_or_else(|| self.default_y_dimension(ui))
     }

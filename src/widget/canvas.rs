@@ -127,6 +127,7 @@ pub enum Direction {
 impl<'a> Canvas<'a> {
 
     /// Construct a new Canvas builder.
+    #[inline]
     pub fn new() -> Self {
         Canvas {
             common: widget::CommonBuilder::new(),
@@ -146,6 +147,7 @@ impl<'a> Canvas<'a> {
     }
 
     /// Set the length of the Split as an absolute scalar.
+    #[inline]
     pub fn length(mut self, length: Scalar) -> Self {
         self.style.length = Some(Length::Absolute(length));
         self
@@ -154,33 +156,39 @@ impl<'a> Canvas<'a> {
     /// Set the length of the Split as a weight.
     ///
     /// The default length weight for each widget is `1.0`.
+    #[inline]
     pub fn length_weight(mut self, weight: Weight) -> Self {
         self.style.length = Some(Length::Weight(weight));
         self
     }
 
     /// Set the child Canvas Splits of the current Canvas flowing in a given direction.
+    #[inline]
     fn flow(mut self, direction: Direction, splits: ListOfSplits<'a>) -> Self {
         self.maybe_splits = Some((direction, splits));
         self
     }
 
     /// Set the child Canvasses flowing to the right.
+    #[inline]
     pub fn flow_right(self, splits: ListOfSplits<'a>) -> Self {
         self.flow(Direction::X(Forwards), splits)
     }
 
     /// Set the child Canvasses flowing to the left.
+    #[inline]
     pub fn flow_left(self, splits: ListOfSplits<'a>) -> Self {
         self.flow(Direction::X(Backwards), splits)
     }
 
     /// Set the child Canvasses flowing upwards.
+    #[inline]
     pub fn flow_up(self, splits: ListOfSplits<'a>) -> Self {
         self.flow(Direction::Y(Forwards), splits)
     }
 
     /// Set the child Canvasses flowing downwards.
+    #[inline]
     pub fn flow_down(self, splits: ListOfSplits<'a>) -> Self {
         self.flow(Direction::Y(Backwards), splits)
     }
@@ -201,6 +209,7 @@ impl<'a> Canvas<'a> {
     }
 
     /// Set the color of the `Canvas`' `TitleBar` if it is visible.
+    #[inline]
     pub fn title_bar_color(mut self, color: Color) -> Self {
         self.style.title_bar_color = Some(Some(color));
         self
@@ -214,28 +223,34 @@ impl<'a> Widget for Canvas<'a> {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
 
+    #[inline]
     fn default_x_position(&self, _ui: &Ui) -> Position {
         Position::Relative(position::Relative::Place(Place::Middle), None)
     }
 
+    #[inline]
     fn default_y_position(&self, _ui: &Ui) -> Position {
         Position::Relative(position::Relative::Place(Place::Middle), None)
     }
@@ -414,6 +429,7 @@ fn title_bar(canvas: Rect, font_size: FontSize) -> Rect {
 
 impl Style {
     /// Get the Padding for the Canvas' kid area.
+    #[inline]
     pub fn padding(&self, theme: &Theme) -> position::Padding {
         position::Padding {
             x: Range::new(self.pad_left(theme), self.pad_right(theme)),

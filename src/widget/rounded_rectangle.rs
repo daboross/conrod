@@ -37,6 +37,7 @@ pub struct State {
 impl RoundedRectangle {
 
     /// Build a rounded rectangle with the given dimensions and style.
+    #[inline]
     pub fn styled(dim: Dimensions, radius: Scalar, style: Style) -> Self {
         RoundedRectangle {
             common: widget::CommonBuilder::new(),
@@ -47,26 +48,31 @@ impl RoundedRectangle {
     }
 
     /// Build a new filled rounded rectangle.
+    #[inline]
     pub fn fill(dim: Dimensions, radius: Scalar) -> Self {
         RoundedRectangle::styled(dim, radius, Style::fill())
     }
 
     /// Build a new filled rounded rectangle widget filled with the given color.
+    #[inline]
     pub fn fill_with(dim: Dimensions, radius: Scalar, color: Color) -> Self {
         RoundedRectangle::styled(dim, radius, Style::fill_with(color))
     }
 
     /// Build a new outlined rounded rectangle widget.
+    #[inline]
     pub fn outline(dim: Dimensions, radius: Scalar) -> Self {
         RoundedRectangle::styled(dim, radius, Style::outline())
     }
 
     /// Build an outlined rounded rectangle rather than a filled one.
+    #[inline]
     pub fn outline_styled(dim: Dimensions, radius: Scalar, line_style: widget::line::Style) -> Self {
         RoundedRectangle::styled(dim, radius, Style::outline_styled(line_style))
     }
 
     /// The number of points in each corner of the circle used to draw the rounded corners.
+    #[inline]
     pub fn corner_resolution(mut self, res: usize) -> Self {
         self.corner_resolution = res;
         self
@@ -79,20 +85,24 @@ impl Widget for RoundedRectangle {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -141,6 +151,7 @@ impl Widget for RoundedRectangle {
 }
 
 impl Colorable for RoundedRectangle {
+    #[inline]
     fn color(mut self, color: Color) -> Self {
         self.style.set_color(color);
         self

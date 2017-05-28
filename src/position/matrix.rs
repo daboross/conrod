@@ -27,6 +27,7 @@ pub struct Matrix {
 impl Matrix {
 
     /// Start building a new position **Matrix**.
+    #[inline]
     pub fn new(cols: usize, rows: usize) -> Matrix {
         Matrix {
             cols: cols,
@@ -41,6 +42,7 @@ impl Matrix {
     }
 
     /// Produce the matrix with the given cell padding.
+    #[inline]
     pub fn cell_padding(mut self, w: Scalar, h: Scalar) -> Matrix {
         self.cell_pad_w = w;
         self.cell_pad_h = h;

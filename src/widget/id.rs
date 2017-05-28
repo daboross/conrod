@@ -33,6 +33,7 @@ pub struct ListWalk { i: usize }
 impl<'a> Generator<'a> {
 
     /// Constructor for a new `widget::Id` generator.
+    #[inline]
     pub fn new(widget_graph: &'a mut Graph) -> Self {
         Generator {
             widget_graph: widget_graph,
@@ -47,6 +48,7 @@ impl<'a> Generator<'a> {
     /// be re-used on next update.
     ///
     /// **Panics** if adding another node would exceed the maximum capacity for node indices.
+    #[inline]
     pub fn next(&mut self) -> Id {
         self.widget_graph.add_placeholder()
     }
@@ -57,11 +59,13 @@ impl<'a> Generator<'a> {
 impl List {
 
     /// Construct a cache for multiple indices.
+    #[inline]
     pub fn new() -> Self {
         List(Vec::new())
     }
 
     /// Produce a walker for producing the `List`'s indices.
+    #[inline]
     pub fn walk(&self) -> ListWalk {
         ListWalk { i: 0 }
     }
@@ -84,6 +88,7 @@ impl List {
 
 impl std::ops::Deref for List {
     type Target = [Id];
+    #[inline]
     fn deref(&self) -> &Self::Target {
         &self.0
     }
@@ -180,6 +185,7 @@ macro_rules! widget_ids {
 
             /// Construct a new `widget::Id` container.
             #[allow(unused_mut, unused_variables)]
+            #[inline]
             pub fn new(mut generator: $crate::widget::id::Generator) -> Self {
                 widget_ids! {
                     constructor $Ids, generator { {} $($id)* }

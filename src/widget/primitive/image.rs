@@ -65,6 +65,7 @@ impl Image {
     /// 1. use an enum with a variant for each type
     /// 2. use a trait object, where the trait is implemented for each of your image types or
     /// 3. use an index type which may be mapped to your various image types.
+    #[inline]
     pub fn new(image_id: image::Id) -> Self {
         Image {
             common: widget::CommonBuilder::new(),
@@ -77,6 +78,7 @@ impl Image {
     /// The rectangular area of the image that we wish to display.
     ///
     /// If this method is not called, the entire image will be used.
+    #[inline]
     pub fn source_rectangle(mut self, rect: Rect) -> Self {
         self.src_rect = Some(rect);
         self
@@ -94,14 +96,17 @@ impl Widget for Image {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, _: widget::id::Generator) -> Self::State {
         State {
             src_rect: None,
@@ -109,10 +114,12 @@ impl Widget for Image {
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
 
+    #[inline]
     fn default_x_dimension(&self, ui: &Ui) -> Dimension {
         match self.src_rect.as_ref() {
             Some(rect) => Dimension::Absolute(rect.w()),
@@ -120,6 +127,7 @@ impl Widget for Image {
         }
     }
 
+    #[inline]
     fn default_y_dimension(&self, ui: &Ui) -> Dimension {
         match self.src_rect.as_ref() {
             Some(rect) => Dimension::Absolute(rect.h()),

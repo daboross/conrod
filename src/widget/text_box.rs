@@ -57,6 +57,7 @@ pub struct State {
 impl<'a> TextBox<'a> {
 
     /// Construct a TextBox widget.
+    #[inline]
     pub fn new(text: &'a str) -> Self {
         TextBox {
             common: widget::CommonBuilder::new(),
@@ -66,21 +67,25 @@ impl<'a> TextBox<'a> {
     }
 
     /// Align the text to the left of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn left_justify(self) -> Self {
         self.justify(text::Justify::Left)
     }
 
     /// Align the text to the middle of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn center_justify(self) -> Self {
         self.justify(text::Justify::Center)
     }
 
     /// Align the text to the right of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn right_justify(self) -> Self {
         self.justify(text::Justify::Right)
     }
 
     /// Specify the font used for displaying the text.
+    #[inline]
     pub fn font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.font_id = Some(Some(font_id));
         self
@@ -109,20 +114,24 @@ impl<'a> Widget for TextBox<'a> {
     type Style = Style;
     type Event = Vec<Event>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

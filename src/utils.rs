@@ -11,16 +11,19 @@ use std;
 
 
 /// Compare to PartialOrd values and return the min.
+#[inline]
 pub fn partial_min<T: PartialOrd>(a: T, b: T) -> T {
     if a <= b { a } else { b }
 }
 
 /// Compare to PartialOrd values and return the min.
+#[inline]
 pub fn partial_max<T: PartialOrd>(a: T, b: T) -> T {
     if a >= b { a } else { b }
 }
 
 /// Clamp a value between some range.
+#[inline]
 pub fn clamp<T: PartialOrd>(n: T, start: T, end: T) -> T {
     if start <= end {
         if n < start { start } else if n > end { end } else { n }
@@ -30,12 +33,14 @@ pub fn clamp<T: PartialOrd>(n: T, start: T, end: T) -> T {
 }
 
 /// Convert degrees to radians.
+#[inline]
 pub fn degrees<F: Float + NumCast>(d: F) -> F {
     use std::f32::consts::PI;
     d * NumCast::from(PI / 180.0).unwrap()
 }
 
 /// Modulo float.
+#[inline]
 pub fn fmod(f: f32, n: i32) -> f32 {
     let i = f.floor() as i32;
     modulo(i, n) as f32 + f - i as f32

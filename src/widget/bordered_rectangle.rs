@@ -58,6 +58,7 @@ pub struct State {
 impl BorderedRectangle {
 
     /// Build a new **BorderedRectangle**.
+    #[inline]
     pub fn new(dim: Dimensions) -> Self {
         BorderedRectangle {
             common: widget::CommonBuilder::new(),
@@ -75,20 +76,24 @@ impl Widget for BorderedRectangle {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

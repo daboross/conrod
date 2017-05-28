@@ -75,6 +75,7 @@ pub struct State {
 impl<'a> Text<'a> {
 
     /// Build a new **Text** widget.
+    #[inline]
     pub fn new(text: &'a str) -> Self {
         Text {
             common: widget::CommonBuilder::new(),
@@ -84,46 +85,54 @@ impl<'a> Text<'a> {
     }
 
     /// Specify that the **Text** should not wrap lines around the width.
+    #[inline]
     pub fn no_line_wrap(mut self) -> Self {
         self.style.maybe_wrap = Some(None);
         self
     }
 
     /// Line wrap the **Text** at the beginning of the first word that exceeds the width.
+    #[inline]
     pub fn wrap_by_word(mut self) -> Self {
         self.style.maybe_wrap = Some(Some(Wrap::Whitespace));
         self
     }
 
     /// Line wrap the **Text** at the beginning of the first character that exceeds the width.
+    #[inline]
     pub fn wrap_by_character(mut self) -> Self {
         self.style.maybe_wrap = Some(Some(Wrap::Character));
         self
     }
 
     /// A method for specifying the `Font` used for displaying the `Text`.
+    #[inline]
     pub fn font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.font_id =  Some(Some(font_id));
         self
     }
 
     /// Build the **Text** with the given **Style**.
+    #[inline]
     pub fn with_style(mut self, style: Style) -> Self {
         self.style = style;
         self
     }
 
     /// Align the text to the left of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn left_justify(self) -> Self {
         self.justify(text::Justify::Left)
     }
 
     /// Align the text to the middle of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn center_justify(self) -> Self {
         self.justify(text::Justify::Center)
     }
 
     /// Align the text to the right of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn right_justify(self) -> Self {
         self.justify(text::Justify::Right)
     }

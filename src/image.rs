@@ -55,6 +55,7 @@ impl<Img> std::ops::Deref for Map<Img> {
 impl<Img> Map<Img> {
 
     /// Construct a new, empty `image::Map`.
+    #[inline]
     pub fn new() -> Self {
         Map {
             next_index: 0,

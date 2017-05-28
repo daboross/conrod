@@ -204,6 +204,7 @@ impl<D> List<D, Dynamic>
     where D: Direction,
 {
     /// Begin building a new `List`.
+    #[inline]
     pub fn new(num_items: usize) -> Self {
         List::from_item_size(num_items, Dynamic {})
     }
@@ -211,6 +212,7 @@ impl<D> List<D, Dynamic>
 
 impl List<Left, Dynamic> {
     /// Begin building a new `List` flowing from right to left.
+    #[inline]
     pub fn flow_left(num_items: usize) -> Self {
         List::new(num_items)
     }
@@ -218,6 +220,7 @@ impl List<Left, Dynamic> {
 
 impl List<Right, Dynamic> {
     /// Begin building a new `List` flowing from left to right.
+    #[inline]
     pub fn flow_right(num_items: usize) -> Self {
         List::new(num_items)
     }
@@ -225,6 +228,7 @@ impl List<Right, Dynamic> {
 
 impl List<Up, Dynamic> {
     /// Begin building a new `List` flowing from bottom to top.
+    #[inline]
     pub fn flow_up(num_items: usize) -> Self {
         List::new(num_items)
     }
@@ -232,6 +236,7 @@ impl List<Up, Dynamic> {
 
 impl List<Down, Dynamic> {
     /// Begin building a new `List` flowing from top to bottom.
+    #[inline]
     pub fn flow_down(num_items: usize) -> Self {
         List::new(num_items)
     }
@@ -242,6 +247,7 @@ impl<D, S> List<D, S>
           S: ItemSize,
 {
     /// Begin building a new `List` given some direction and item size.
+    #[inline]
     pub fn from_item_size(num_items: usize, item_size: S) -> Self {
         List {
             common: widget::CommonBuilder::new(),
@@ -256,6 +262,7 @@ impl<D, S> List<D, S>
     /// Specify a fixed item size, where size is a `Scalar` in the direction that the `List` is
     /// flowing. When a `List` is constructed with this method, all items will have a fixed, equal
     /// length.
+    #[inline]
     pub fn item_size(self, length: Scalar) -> List<D, Fixed> {
         let List { common, style, num_items, .. } = self;
         List {
@@ -282,6 +289,7 @@ impl<D> List<D, Fixed>
     /// Note: This may cause significantly heavier CPU load for lists containing many items (100+).
     /// We only recommend using this when absolutely necessary as large lists may cause unnecessary
     /// bloating within the widget graph, and in turn result in greater traversal times.
+    #[inline]
     pub fn instantiate_all_items(mut self) -> Self {
         self.item_instantiation = ItemInstantiation::All;
         self
@@ -292,6 +300,7 @@ impl<D> List<D, Fixed>
     /// a minimum.
     ///
     /// This is the default behaviour for `List`s with fixed item sizes.
+    #[inline]
     pub fn instantiate_only_visible_items(mut self) -> Self {
         self.item_instantiation = ItemInstantiation::OnlyVisible;
         self
@@ -304,6 +313,7 @@ impl<D, S> List<D, S>
 {
     /// Specifies that the `List` should be scrollable and should provide a `Scrollbar` to the
     /// right of the items.
+    #[inline]
     pub fn scrollbar_next_to(mut self) -> Self {
         self.style.scrollbar_position = Some(Some(ScrollbarPosition::NextTo));
         D::scroll_list_kids(self)
@@ -311,18 +321,21 @@ impl<D, S> List<D, S>
 
     /// Specifies that the `List` should be scrollable and should provide a `Scrollbar` that hovers
     /// above the right edge of the items and automatically hides when the user is not scrolling.
+    #[inline]
     pub fn scrollbar_on_top(mut self) -> Self {
         self.style.scrollbar_position = Some(Some(ScrollbarPosition::OnTop));
         D::scroll_list_kids(self)
     }
 
     /// The width of the `Scrollbar`.
+    #[inline]
     pub fn scrollbar_thickness(mut self, w: Scalar) -> Self {
         self.style.scrollbar_thickness = Some(Some(w));
         self
     }
 
     /// The color of the `Scrollbar`.
+    #[inline]
     pub fn scrollbar_color(mut self, color: Color) -> Self {
         self.style.scrollbar_color = Some(color);
         self
@@ -337,20 +350,24 @@ impl<D, S> Widget for List<D, S>
     type Style = Style;
     type Event = (Items<D, S>, Option<Scrollbar<D::Axis>>);
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -446,6 +463,7 @@ impl<D, S> Item<D, S>
 
 impl<S> Item<Down, S> {
     /// The width of the `Item`.
+    #[inline]
     pub fn width(&self) -> Scalar {
         self.breadth
     }
@@ -453,6 +471,7 @@ impl<S> Item<Down, S> {
 
 impl Item<Down, Fixed> {
     /// The height of the `Item`.
+    #[inline]
     pub fn height(&self) -> Scalar {
         self.size.length
     }
@@ -460,6 +479,7 @@ impl Item<Down, Fixed> {
 
 impl<S> Item<Up, S> {
     /// The width of the `Item`.
+    #[inline]
     pub fn width(&self) -> Scalar {
         self.breadth
     }
@@ -467,6 +487,7 @@ impl<S> Item<Up, S> {
 
 impl Item<Up, Fixed> {
     /// The height of the `Item`.
+    #[inline]
     pub fn height(&self) -> Scalar {
         self.size.length
     }
@@ -474,6 +495,7 @@ impl Item<Up, Fixed> {
 
 impl<S> Item<Right, S> {
     /// The height of the `Item`.
+    #[inline]
     pub fn height(&self) -> Scalar {
         self.breadth
     }
@@ -481,6 +503,7 @@ impl<S> Item<Right, S> {
 
 impl Item<Right, Fixed> {
     /// The width of the `Item`.
+    #[inline]
     pub fn width(&self) -> Scalar {
         self.size.length
     }
@@ -488,6 +511,7 @@ impl Item<Right, Fixed> {
 
 impl<S> Item<Left, S> {
     /// The height of the `Item`.
+    #[inline]
     pub fn height(&self) -> Scalar {
         self.breadth
     }
@@ -495,6 +519,7 @@ impl<S> Item<Left, S> {
 
 impl Item<Left, Fixed> {
     /// The width of the `Item`.
+    #[inline]
     pub fn width(&self) -> Scalar {
         self.size.length
     }
@@ -505,6 +530,7 @@ impl<A> Scrollbar<A>
     where A: widget::scrollbar::Axis,
 {
     /// Set the `Scrollbar` within the given `Ui`.
+    #[inline]
     pub fn set(self, ui: &mut UiCell) {
         let Scrollbar { widget, id } = self;
         widget.set(id, ui);
@@ -630,6 +656,7 @@ impl ItemSize for Fixed {
         (items, Some(scrollbar))
     }
 
+    #[inline]
     fn size_item<W, D>(&self, widget: W, breadth: Scalar) -> W
         where W: Widget,
               D: Direction,
@@ -708,6 +735,7 @@ impl ItemSize for Dynamic {
         (items, Some(scrollbar))
     }
 
+    #[inline]
     fn size_item<W, D>(&self, widget: W, breadth: Scalar) -> W
         where W: Widget,
               D: Direction,
@@ -721,18 +749,22 @@ impl ItemSize for Dynamic {
 impl Direction for Down {
     type Axis = widget::scroll::Y;
 
+    #[inline]
     fn ranges(Rect { x, y }: Rect) -> (Range, Range) {
         (y.invert(), x)
     }
 
+    #[inline]
     fn scrollbar(id: widget::Id) -> widget::Scrollbar<Self::Axis> {
         widget::Scrollbar::y_axis(id)
     }
 
+    #[inline]
     fn common_scroll(common: &widget::CommonBuilder) -> Option<&widget::scroll::Scroll> {
         common.maybe_y_scroll.as_ref()
     }
 
+    #[inline]
     fn scroll_list_kids<S>(list: List<Self, S>) -> List<Self, S>
         where Self: Sized,
               S: ItemSize,
@@ -753,18 +785,21 @@ impl Direction for Down {
         }
     }
 
+    #[inline]
     fn position_scroll_trigger<W>(scroll_trigger: W, list: widget::Id) -> W
         where W: Widget
     {
         scroll_trigger.mid_top_of(list)
     }
 
+    #[inline]
     fn size_breadth<W>(widget: W, breadth: Scalar) -> W
         where W: Widget
     {
         widget.w(breadth)
     }
 
+    #[inline]
     fn size_length<W>(widget: W, length: Scalar) -> W
         where W: Widget
     {
@@ -776,18 +811,22 @@ impl Direction for Down {
 impl Direction for Up {
     type Axis = widget::scroll::Y;
 
+    #[inline]
     fn ranges(Rect { x, y }: Rect) -> (Range, Range) {
         (y, x)
     }
 
+    #[inline]
     fn scrollbar(id: widget::Id) -> widget::Scrollbar<Self::Axis> {
         widget::Scrollbar::y_axis(id)
     }
 
+    #[inline]
     fn common_scroll(common: &widget::CommonBuilder) -> Option<&widget::scroll::Scroll> {
         common.maybe_y_scroll.as_ref()
     }
 
+    #[inline]
     fn scroll_list_kids<S>(list: List<Self, S>) -> List<Self, S>
         where Self: Sized,
               S: ItemSize,
@@ -808,18 +847,21 @@ impl Direction for Up {
         }
     }
 
+    #[inline]
     fn position_scroll_trigger<W>(scroll_trigger: W, list: widget::Id) -> W
         where W: Widget
     {
         scroll_trigger.mid_bottom_of(list)
     }
 
+    #[inline]
     fn size_breadth<W>(widget: W, breadth: Scalar) -> W
         where W: Widget
     {
         widget.w(breadth)
     }
 
+    #[inline]
     fn size_length<W>(widget: W, length: Scalar) -> W
         where W: Widget
     {
@@ -831,18 +873,22 @@ impl Direction for Up {
 impl Direction for Left {
     type Axis = widget::scroll::X;
 
+    #[inline]
     fn ranges(Rect { x, y }: Rect) -> (Range, Range) {
         (x.invert(), y)
     }
 
+    #[inline]
     fn scrollbar(id: widget::Id) -> widget::Scrollbar<Self::Axis> {
         widget::Scrollbar::x_axis(id)
     }
 
+    #[inline]
     fn common_scroll(common: &widget::CommonBuilder) -> Option<&widget::scroll::Scroll> {
         common.maybe_x_scroll.as_ref()
     }
 
+    #[inline]
     fn scroll_list_kids<S>(list: List<Self, S>) -> List<Self, S>
         where Self: Sized,
               S: ItemSize,
@@ -863,18 +909,21 @@ impl Direction for Left {
         }
     }
 
+    #[inline]
     fn position_scroll_trigger<W>(scroll_trigger: W, list: widget::Id) -> W
         where W: Widget
     {
         scroll_trigger.mid_right_of(list)
     }
 
+    #[inline]
     fn size_breadth<W>(widget: W, breadth: Scalar) -> W
         where W: Widget
     {
         widget.h(breadth)
     }
 
+    #[inline]
     fn size_length<W>(widget: W, length: Scalar) -> W
         where W: Widget
     {
@@ -886,18 +935,22 @@ impl Direction for Left {
 impl Direction for Right {
     type Axis = widget::scroll::X;
 
+    #[inline]
     fn ranges(Rect { x, y }: Rect) -> (Range, Range) {
         (x, y)
     }
 
+    #[inline]
     fn scrollbar(id: widget::Id) -> widget::Scrollbar<Self::Axis> {
         widget::Scrollbar::x_axis(id)
     }
 
+    #[inline]
     fn common_scroll(common: &widget::CommonBuilder) -> Option<&widget::scroll::Scroll> {
         common.maybe_x_scroll.as_ref()
     }
 
+    #[inline]
     fn scroll_list_kids<S>(list: List<Self, S>) -> List<Self, S>
         where Self: Sized,
               S: ItemSize,
@@ -918,18 +971,21 @@ impl Direction for Right {
         }
     }
 
+    #[inline]
     fn position_scroll_trigger<W>(scroll_trigger: W, list: widget::Id) -> W
         where W: Widget
     {
         scroll_trigger.mid_left_of(list)
     }
 
+    #[inline]
     fn size_breadth<W>(widget: W, breadth: Scalar) -> W
         where W: Widget
     {
         widget.h(breadth)
     }
 
+    #[inline]
     fn size_length<W>(widget: W, length: Scalar) -> W
         where W: Widget
     {

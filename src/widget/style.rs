@@ -88,6 +88,7 @@ macro_rules! impl_widget_style_new {
     ($Style:ident { $($fields:tt)* }) => {
         impl $Style {
             /// Construct the default `Style`, initialising all fields to `None`.
+            #[inline]
             pub fn new() -> Self {
                 default_widget_style_struct!($Style { $($fields)* })
             }
@@ -103,6 +104,7 @@ macro_rules! impl_widget_style_retrieval_method {
         /// Retrieves the value from the `Style`.
         ///
         /// If the `Style`'s field is `None`, falls back to default specified within the `Theme`.
+        #[inline]
         pub fn $field_name(&self, theme: &$crate::Theme) -> $FieldType {
             self.$field_name
                 .or_else(|| theme.widget_style::<Self>().and_then(|default| {
@@ -115,6 +117,7 @@ macro_rules! impl_widget_style_retrieval_method {
         /// Retrieves the value from the `Style`.
         ///
         /// If the `Style`'s field is `None`, falls back to default specified within the `Theme`.
+        #[inline]
         pub fn $field_name(&self, theme: &$crate::Theme) -> $FieldType {
             self.$field_name
                 .or_else(|| theme.widget_style::<Self>().and_then(|default| {

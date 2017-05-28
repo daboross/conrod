@@ -45,6 +45,7 @@ pub struct State {
 impl<X, Y, F> PlotPath<X, Y, F> {
 
     /// Begin building a new `PlotPath` widget instance.
+    #[inline]
     pub fn new(min_x: X, max_x: X, min_y: Y, max_y: Y, f: F) -> Self {
         PlotPath {
             common: widget::CommonBuilder::new(),
@@ -69,20 +70,24 @@ impl<X, Y, F> Widget for PlotPath<X, Y, F>
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

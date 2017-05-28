@@ -56,6 +56,7 @@ fn bounding_box_for_points<I>(mut points: I) -> Rect
 impl<I> PointPath<I> {
 
     /// The same as [**PointPath::new**](./struct.PointPath#method.new) but with th given style.
+    #[inline]
     pub fn styled(points: I, style: Style) -> Self {
         PointPath {
             points: points,
@@ -69,6 +70,7 @@ impl<I> PointPath<I> {
     ///
     /// It is recommended that you also see the `abs` and `centred` constructors for smart
     /// positioning and layout.
+    #[inline]
     pub fn new(points: I) -> Self {
         PointPath::styled(points, Style::new())
     }
@@ -80,6 +82,7 @@ impl<I> PointPath<I> {
     ///
     /// If you would rather centre the points to the middle of the bounding box, use
     /// [**PointPath::centred**](./struct.PointPath#method.centred) instead.
+    #[inline]
     pub fn abs(points: I) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -88,6 +91,7 @@ impl<I> PointPath<I> {
 
     /// The same as [**PointPath::abs**](./struct.PointPath#method.abs) but constructs the
     /// **PointPath** with the given style.
+    #[inline]
     pub fn abs_styled(points: I, style: Style) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -104,6 +108,7 @@ impl<I> PointPath<I> {
     ///
     /// If you would rather centre the bounding box to the points, use
     /// [**PointPath::abs**](./struct.PointPath#method.abs) instead.
+    #[inline]
     pub fn centred(points: I) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -112,6 +117,7 @@ impl<I> PointPath<I> {
 
     /// The same as [**PointPath::centred**](./struct.PointPath#method.centred) but constructs the
     /// **PointPath** with the given style.
+    #[inline]
     pub fn centred_styled(points: I, style: Style) -> Self
         where I: IntoIterator<Item=Point> + Clone,
     {
@@ -126,24 +132,28 @@ impl<I> PointPath<I> {
     ///
     /// Use this instead of `Positionable::width` for the thickness of the `Line`, as `width` and
     /// `height` refer to the dimensions of the bounding rectangle.
+    #[inline]
     pub fn thickness(mut self, thickness: Scalar) -> Self {
         self.style.set_thickness(thickness);
         self
     }
 
     /// Make a Solid line.
+    #[inline]
     pub fn solid(mut self) -> Self {
         self.style.set_pattern(Pattern::Solid);
         self
     }
 
     /// Make a line with a Dashed pattern.
+    #[inline]
     pub fn dashed(mut self) -> Self {
         self.style.set_pattern(Pattern::Dashed);
         self
     }
 
     /// Make a line with a Dotted pattern.
+    #[inline]
     pub fn dotted(mut self) -> Self {
         self.style.set_pattern(Pattern::Dotted);
         self
@@ -159,20 +169,24 @@ impl<I> Widget for PointPath<I>
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, _: widget::id::Generator) -> Self::State {
         State {
             points: Vec::new(),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -214,6 +228,7 @@ impl<I> Widget for PointPath<I>
 }
 
 impl<I> Colorable for PointPath<I> {
+    #[inline]
     fn color(mut self, color: Color) -> Self {
         self.style.set_color(color);
         self

@@ -66,6 +66,7 @@ pub type StateY = State<Y>;
 
 impl Scroll {
     /// The default `Scroll` args.
+    #[inline]
     pub fn new() -> Self {
         Scroll {
             maybe_initial_alignment: None,
@@ -227,22 +228,27 @@ impl<A> State<A>
 
 impl Axis for X {
 
+    #[inline]
     fn parallel_range(rect: Rect) -> Range {
         rect.x
     }
 
+    #[inline]
     fn perpendicular_range(rect: Rect) -> Range {
         rect.y
     }
 
+    #[inline]
     fn padding_range(padding: Padding) -> Range {
         padding.x
     }
 
+    #[inline]
     fn mouse_scalar(mouse_xy: Point) -> Scalar {
         mouse_xy[0]
     }
 
+    #[inline]
     fn offset_direction() -> Scalar {
         1.0
     }
@@ -252,22 +258,27 @@ impl Axis for X {
 
 impl Axis for Y {
 
+    #[inline]
     fn parallel_range(rect: Rect) -> Range {
         rect.y
     }
 
+    #[inline]
     fn perpendicular_range(rect: Rect) -> Range {
         rect.x
     }
 
+    #[inline]
     fn padding_range(padding: Padding) -> Range {
         padding.y
     }
 
+    #[inline]
     fn mouse_scalar(mouse_xy: Point) -> Scalar {
         mouse_xy[1]
     }
 
+    #[inline]
     fn offset_direction() -> Scalar {
         -1.0
     }

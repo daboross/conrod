@@ -65,6 +65,7 @@ const LABEL_PADDING: f64 = 4.0;
 impl<'a> TitleBar<'a> {
 
     /// Construct a new TitleBar widget and attach it to the widget at the given index.
+    #[inline]
     pub fn new(label: &'a str, id: widget::Id) -> Self {
         TitleBar {
             common: widget::CommonBuilder::new(),
@@ -74,36 +75,42 @@ impl<'a> TitleBar<'a> {
     }
 
     /// Align the text to the left of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn left_justify_label(mut self) -> Self {
         self.style.justify = Some(text::Justify::Left);
         self
     }
 
     /// Align the text to the middle of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn center_justify_label(mut self) -> Self {
         self.style.justify = Some(text::Justify::Center);
         self
     }
 
     /// Align the text to the right of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn right_justify_label(mut self) -> Self {
         self.style.justify = Some(text::Justify::Right);
         self
     }
 
     /// Specify the label's position relatively to `Button` along the *x* axis.
+    #[inline]
     pub fn label_x(mut self, x: position::Relative) -> Self {
         self.style.label_x = Some(x);
         self
     }
 
     /// Specify the label's position relatively to `Button` along the *y* axis.
+    #[inline]
     pub fn label_y(mut self, y: position::Relative) -> Self {
         self.style.label_y = Some(y);
         self
     }
 
     /// Specify the font used for displaying the text.
+    #[inline]
     pub fn font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.font_id = Some(Some(font_id));
         self
@@ -127,24 +134,29 @@ impl<'a> Widget for TitleBar<'a> {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
 
+    #[inline]
     fn default_y_dimension(&self, ui: &Ui) -> Dimension {
         let font_size = self.style.font_size(&ui.theme);
         let h = calc_height(font_size);

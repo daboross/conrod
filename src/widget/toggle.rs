@@ -80,6 +80,7 @@ pub struct TimesClicked {
 
 impl Iterator for TimesClicked {
     type Item = bool;
+    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         if self.count > 0 {
             self.count -= 1;
@@ -95,6 +96,7 @@ impl Iterator for TimesClicked {
 impl<'a> Toggle<'a> {
 
     /// Construct a new Toggle widget.
+    #[inline]
     pub fn new(value: bool) -> Toggle<'a> {
         Toggle {
             common: widget::CommonBuilder::new(),
@@ -106,18 +108,21 @@ impl<'a> Toggle<'a> {
     }
 
     /// Specify the font used for displaying the label.
+    #[inline]
     pub fn label_font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.label_font_id = Some(Some(font_id));
         self
     }
 
     /// Specify the label's position relatively to `Toggle` along the *x* axis.
+    #[inline]
     pub fn label_x(mut self, x: position::Relative) -> Self {
         self.style.label_x = Some(x);
         self
     }
 
     /// Specify the label's position relatively to `Toggle` along the *y* axis.
+    #[inline]
     pub fn label_y(mut self, y: position::Relative) -> Self {
         self.style.label_y = Some(y);
         self
@@ -134,20 +139,24 @@ impl<'a> Widget for Toggle<'a> {
     type Style = Style;
     type Event = TimesClicked;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

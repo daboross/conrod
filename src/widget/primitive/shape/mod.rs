@@ -23,32 +23,38 @@ pub enum Style {
 impl Style {
 
     /// A default `Fill` style.
+    #[inline]
     pub fn fill() -> Self {
         Style::Fill(None)
     }
 
     /// A `Fill` style with some given `Color`.
+    #[inline]
     pub fn fill_with(color: Color) -> Self {
         Style::Fill(Some(color))
     }
 
     /// A default `Outline` style.
+    #[inline]
     pub fn outline() -> Self {
         Style::Outline(widget::line::Style::new())
     }
 
     /// A default `Outline` style.
+    #[inline]
     pub fn outline_styled(line_style: widget::line::Style) -> Self {
         Style::Outline(line_style)
     }
 
     /// The style with some given Color.
+    #[inline]
     pub fn color(mut self, color: Color) -> Self {
         self.set_color(color);
         self
     }
 
     /// Set the color for the style.
+    #[inline]
     pub fn set_color(&mut self, color: Color) {
         match *self {
             Style::Fill(ref mut maybe_color) => *maybe_color = Some(color),
@@ -57,6 +63,7 @@ impl Style {
     }
 
     /// Get the color of the Rectangle.
+    #[inline]
     pub fn get_color(&self, theme: &Theme) -> Color {
         match *self {
             Style::Fill(maybe_color) => maybe_color.unwrap_or(theme.shape_color),

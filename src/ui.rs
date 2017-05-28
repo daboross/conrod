@@ -117,6 +117,7 @@ impl UiBuilder {
     ///
     /// Give the initial dimensions of the window within which the `Ui` will be instantiated as a
     /// `Scalar` (DPI agnostic) value.
+    #[inline]
     pub fn new(window_dimensions: Dimensions) -> Self {
         UiBuilder {
             window_dimensions: window_dimensions,
@@ -128,6 +129,7 @@ impl UiBuilder {
     /// The theme used to set default styling for widgets.
     ///
     /// If this field is `None` when `build` is called, `Theme::default` will be used.
+    #[inline]
     pub fn theme(mut self, value: Theme) -> Self {
         self.maybe_theme = Some(value);
         self
@@ -146,12 +148,14 @@ impl UiBuilder {
     ///
     /// If this field is `None` when `build` is called, these collections will be initialised with
     /// no pre-reserved size and will instead grow organically as required.
+    #[inline]
     pub fn widgets_capacity(mut self, value: usize) -> Self {
         self.maybe_widgets_capacity = Some(value);
         self
     }
 
     /// Build **Ui** from the given builder
+    #[inline]
     pub fn build(self) -> Ui {
         Ui::new(self)
     }
@@ -217,6 +221,7 @@ impl Ui {
     /// The **Rect** for the widget at the given index.
     ///
     /// Returns `None` if there is no widget for the given index.
+    #[inline]
     pub fn rect_of(&self, id: widget::Id) -> Option<Rect> {
         self.widget_graph.widget(id).map(|widget| widget.rect)
     }
@@ -224,6 +229,7 @@ impl Ui {
     /// The absolute width of the widget at the given index.
     ///
     /// Returns `None` if there is no widget for the given index.
+    #[inline]
     pub fn w_of(&self, id: widget::Id) -> Option<Scalar> {
         self.rect_of(id).map(|rect| rect.w())
     }
@@ -231,6 +237,7 @@ impl Ui {
     /// The absolute height of the widget at the given index.
     ///
     /// Returns `None` if there is no widget for the given index.
+    #[inline]
     pub fn h_of(&self, id: widget::Id) -> Option<Scalar> {
         self.rect_of(id).map(|rect| rect.h())
     }
@@ -238,6 +245,7 @@ impl Ui {
     /// The absolute dimensions for the widget at the given index.
     ///
     /// Returns `None` if there is no widget for the given index.
+    #[inline]
     pub fn wh_of(&self, id: widget::Id) -> Option<Dimensions> {
         self.rect_of(id).map(|rect| rect.dim())
     }
@@ -245,6 +253,7 @@ impl Ui {
     /// The coordinates for the widget at the given index.
     ///
     /// Returns `None` if there is no widget for the given index.
+    #[inline]
     pub fn xy_of(&self, id: widget::Id) -> Option<Point> {
         self.rect_of(id).map(|rect| rect.xy())
     }
@@ -252,6 +261,7 @@ impl Ui {
     /// The `kid_area` of the widget at the given index.
     ///
     /// Returns `None` if there is no widget for the given index.
+    #[inline]
     pub fn kid_area_of(&self, id: widget::Id) -> Option<Rect> {
         self.widget_graph.widget(id).map(|widget| {
             widget.kid_area.rect.padding(widget.kid_area.pad)
@@ -259,11 +269,13 @@ impl Ui {
     }
 
     /// An index to the previously updated widget if there is one.
+    #[inline]
     pub fn maybe_prev_widget(&self) -> Option<widget::Id> {
         self.maybe_prev_widget_id
     }
 
     /// Borrow the **Ui**'s `widget_graph`.
+    #[inline]
     pub fn widget_graph(&self) -> &Graph {
         &self.widget_graph
     }
@@ -272,6 +284,7 @@ impl Ui {
     ///
     /// This set indicates which widgets have been instantiated since the beginning of the most
     /// recent `Ui::set_widgets` call.
+    #[inline]
     pub fn updated_widgets(&self) -> &fnv::FnvHashSet<widget::Id> {
         &self.updated_widgets
     }
@@ -280,6 +293,7 @@ impl Ui {
     ///
     /// This set indicates which widgets have were instantiated during the previous call to
     /// `Ui::set_widgets`.
+    #[inline]
     pub fn prev_updated_widgets(&self) -> &fnv::FnvHashSet<widget::Id> {
         &self.prev_updated_widgets
     }
@@ -897,6 +911,7 @@ impl Ui {
     /// Get an immutable reference to global input. Handles aggregation of events and providing them to Widgets
     ///
     /// Can be used to access the current input state, e.g. which widgets are currently capturing inputs.
+    #[inline]
     pub fn global_input(&self) -> &input::Global {
         &self.global_input
     }
@@ -1055,6 +1070,7 @@ impl Ui {
 
     /// Set the number of frames that the `Ui` should draw in the case that `needs_redraw` is
     /// called. The default is `3` (see the SAFE_REDRAW_COUNT docs for details).
+    #[inline]
     pub fn set_num_redraw_frames(&mut self, num_frames: u8) {
         self.num_redraw_frames = num_frames;
     }
@@ -1063,6 +1079,7 @@ impl Ui {
     /// Tells the `Ui` that it needs to be re-draw everything. It does this by setting the redraw
     /// count to `num_redraw_frames`. See the docs for `set_num_redraw_frames`, SAFE_REDRAW_COUNT
     /// or `draw_if_changed` for more info on how/why the redraw count is used.
+    #[inline]
     pub fn needs_redraw(&mut self) {
         self.redraw_count = self.num_redraw_frames;
     }
@@ -1072,6 +1089,7 @@ impl Ui {
     ///
     /// This method sets the colour with which this `Rectangle` is drawn (the default being
     /// `conrod::color::TRANSPARENT`.
+    #[inline]
     pub fn clear_with(&mut self, color: Color) {
         self.maybe_background_color = Some(color);
     }
@@ -1117,6 +1135,7 @@ impl Ui {
     /// This ensures that conrod is drawn to each buffer in the case that there is buffer swapping
     /// happening. Let us know if you need finer control over this and we'll expose a way for you
     /// to set the redraw count manually.
+    #[inline]
     pub fn draw_if_changed(&mut self) -> Option<render::Primitives> {
         if self.redraw_count > 0 {
             return Some(self.draw())
@@ -1127,6 +1146,7 @@ impl Ui {
 
 
     /// The **Rect** that bounds the kids of the widget with the given index.
+    #[inline]
     pub fn kids_bounding_box(&self, id: widget::Id) -> Option<Rect> {
         graph::algo::kids_bounding_box(&self.widget_graph, &self.prev_updated_widgets, id)
     }
@@ -1136,6 +1156,7 @@ impl Ui {
     /// index, including consideration of cropped scroll area.
     ///
     /// Otherwise, return None if the widget is not visible.
+    #[inline]
     pub fn visible_area(&self, id: widget::Id) -> Option<Rect> {
         graph::algo::cropped_area_of_widget(&self.widget_graph, id)
     }
@@ -1146,14 +1167,17 @@ impl Ui {
 impl<'a> UiCell<'a> {
 
     /// A reference to the `Theme` that is currently active within the `Ui`.
+    #[inline]
     pub fn theme(&self) -> &Theme { &self.ui.theme }
 
     /// A convenience method for borrowing the `Font` for the given `Id` if it exists.
+    #[inline]
     pub fn font(&self, id: text::font::Id) -> Option<&text::Font> {
         self.ui.fonts.get(id)
     }
 
     /// Returns the dimensions of the window
+    #[inline]
     pub fn window_dim(&self) -> Dimensions {
         [self.ui.win_w, self.ui.win_h]
     }
@@ -1161,6 +1185,7 @@ impl<'a> UiCell<'a> {
     /// Returns an immutable reference to the `input::Global` of the `Ui`.
     ///
     /// All coordinates here will be relative to the center of the window.
+    #[inline]
     pub fn global_input(&self) -> &input::Global {
         &self.ui.global_input
     }
@@ -1168,6 +1193,7 @@ impl<'a> UiCell<'a> {
     /// Returns a `input::Widget` with input events for the widget.
     ///
     /// All coordinates in the `input::Widget` will be relative to the widget at the given index.
+    #[inline]
     pub fn widget_input(&self, id: widget::Id) -> input::Widget {
         self.ui.widget_input(id)
     }
@@ -1176,6 +1202,7 @@ impl<'a> UiCell<'a> {
     ///
     /// See the [**widget::id::Generator**](../widget/id/struct.Generator.html) docs for details on
     /// how to use this correctly.
+    #[inline]
     pub fn widget_id_generator(&mut self) -> widget::id::Generator {
         self.ui.widget_id_generator()
     }
@@ -1183,6 +1210,7 @@ impl<'a> UiCell<'a> {
     /// The **Rect** that bounds the kids of the widget with the given index.
     ///
     /// Returns `None` if the widget has no children or if there's is no widget for the given index.
+    #[inline]
     pub fn kids_bounding_box(&self, id: widget::Id) -> Option<Rect> {
         self.ui.kids_bounding_box(id)
     }
@@ -1191,6 +1219,7 @@ impl<'a> UiCell<'a> {
     ///
     /// The produced `Scroll` event will be pushed to the `pending_scroll_events` and will be
     /// applied to the widget during the next call to `Ui::set_widgets`.
+    #[inline]
     pub fn scroll_widget(&mut self, id: widget::Id, offset: [Scalar; 2]) {
         let (x, y) = (offset[0], offset[1]);
 
@@ -1245,12 +1274,14 @@ impl<'a> Drop for UiCell<'a> {
 
 impl<'a> ::std::ops::Deref for UiCell<'a> {
     type Target = Ui;
+    #[inline]
     fn deref(&self) -> &Ui {
         self.ui
     }
 }
 
 impl<'a> AsRef<Ui> for UiCell<'a> {
+    #[inline]
     fn as_ref(&self) -> &Ui {
         &self.ui
     }
@@ -1260,11 +1291,13 @@ impl<'a> AsRef<Ui> for UiCell<'a> {
 ///
 /// This function is only for internal use to allow for some `Ui` type acrobatics in order to
 /// provide a nice *safe* API for the user.
+#[inline]
 pub fn ref_mut_from_ui_cell<'a, 'b: 'a>(ui_cell: &'a mut UiCell<'b>) -> &'a mut Ui {
     ui_cell.ui
 }
 
 /// A mutable reference to the given `Ui`'s widget `Graph`.
+#[inline]
 pub fn widget_graph_mut(ui: &mut Ui) -> &mut Graph {
     &mut ui.widget_graph
 }

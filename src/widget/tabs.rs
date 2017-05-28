@@ -74,6 +74,7 @@ pub enum Layout {
 impl<'a> Tabs<'a> {
 
     /// Construct some new Canvas Tabs.
+    #[inline]
     pub fn new(tabs: &'a [(widget::Id, &'a str)]) -> Tabs<'a> {
         Tabs {
             common: widget::CommonBuilder::new(),
@@ -84,6 +85,7 @@ impl<'a> Tabs<'a> {
     }
 
     /// Set the initially selected tab with a Canvas via its widget::Id.
+    #[inline]
     pub fn starting_canvas(mut self, canvas_id: widget::Id) -> Self {
         let maybe_idx = self.tabs.iter().enumerate()
             .find(|&(_, &(id, _))| canvas_id == id)
@@ -93,29 +95,34 @@ impl<'a> Tabs<'a> {
     }
 
     /// Set the padding for all edges.
+    #[inline]
     pub fn pad(self, pad: Scalar) -> Tabs<'a> {
         self.pad_left(pad).pad_right(pad).pad_top(pad).pad_bottom(pad)
     }
 
     /// Layout the tabs horizontally.
+    #[inline]
     pub fn layout_horizontally(mut self) -> Self {
         self.style.layout = Some(Layout::Horizontal);
         self
     }
 
     /// Layout the tabs vertically.
+    #[inline]
     pub fn layout_vertically(mut self) -> Self {
         self.style.layout = Some(Layout::Vertical);
         self
     }
 
     /// Build the `Tabs` widget with the given styling for its `Canvas`ses.
+    #[inline]
     pub fn canvas_style(mut self, style: widget::canvas::Style) -> Self {
         self.style.canvas = Some(style);
         self
     }
 
     /// Map the `NumberDialer`'s `widget::canvas::Style` to a new `widget::canvas::Style`.
+    #[inline]
     fn map_canvas_style<F>(mut self, map: F) -> Self
         where F: FnOnce(widget::canvas::Style) -> widget::canvas::Style,
     {
@@ -127,26 +134,31 @@ impl<'a> Tabs<'a> {
     }
 
     /// If the `Tabs` has some `widget::canvas::Style`, assign the left padding.
+    #[inline]
     pub fn pad_left(self, pad: Scalar) -> Self {
         self.map_canvas_style(|mut style| { style.pad_left = Some(pad); style })
     }
 
     /// If the `Tabs` has some `widget::canvas::Style`, assign the left padding.
+    #[inline]
     pub fn pad_right(self, pad: Scalar) -> Self {
         self.map_canvas_style(|mut style| { style.pad_right = Some(pad); style })
     }
 
     /// If the `Tabs` has some `widget::canvas::Style`, assign the left padding.
+    #[inline]
     pub fn pad_bottom(self, pad: Scalar) -> Self {
         self.map_canvas_style(|mut style| { style.pad_bottom = Some(pad); style })
     }
 
     /// If the `Tabs` has some `widget::canvas::Style`, assign the left padding.
+    #[inline]
     pub fn pad_top(self, pad: Scalar) -> Self {
         self.map_canvas_style(|mut style| { style.pad_top = Some(pad); style })
     }
 
     /// The width of a vertical `Tabs` selection bar, or the height of a horizontal one.
+    #[inline]
     pub fn bar_thickness(mut self, thickness: Scalar) -> Self {
         self.style.bar_thickness = Some(Some(thickness));
         self
@@ -166,14 +178,17 @@ impl<'a> Widget for Tabs<'a> {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, _: widget::id::Generator) -> Self::State {
         State {
             tabs: Vec::new(),
@@ -181,6 +196,7 @@ impl<'a> Widget for Tabs<'a> {
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -378,6 +394,7 @@ fn tab_dim(num_tabs: usize, tab_bar_dim: Dimensions, layout: Layout) -> Dimensio
 
 
 impl<'a> ::color::Colorable for Tabs<'a> {
+    #[inline]
     fn color(self, color: Color) -> Self {
         self.map_canvas_style(|mut style| {
             style.color = Some(color);
@@ -387,12 +404,14 @@ impl<'a> ::color::Colorable for Tabs<'a> {
 }
 
 impl<'a> ::border::Borderable for Tabs<'a> {
+    #[inline]
     fn border(self, width: f64) -> Self {
         self.map_canvas_style(|mut style| {
             style.border = Some(width);
             style
         })
     }
+    #[inline]
     fn border_color(self, color: Color) -> Self {
         self.map_canvas_style(|mut style| {
             style.border_color = Some(color);

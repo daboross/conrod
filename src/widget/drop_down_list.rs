@@ -86,6 +86,7 @@ enum MenuState {
 impl<'a, T> DropDownList<'a, T> {
 
     /// Construct a new DropDownList.
+    #[inline]
     pub fn new(items: &'a [T], selected: Option<Idx>) -> Self {
         DropDownList {
             common: widget::CommonBuilder::new(),
@@ -103,6 +104,7 @@ impl<'a, T> DropDownList<'a, T> {
 
     /// Set the maximum height of the DropDownList (before the scrollbar appears) as a number of
     /// items.
+    #[inline]
     pub fn max_visible_items(mut self, num: usize) -> Self {
         self.style.maybe_max_visible_height = Some(Some(MaxHeight::Items(num)));
         self
@@ -110,6 +112,7 @@ impl<'a, T> DropDownList<'a, T> {
 
     /// Set the maximum height of the DropDownList (before the scrollbar appears) as a scalar
     /// height.
+    #[inline]
     pub fn max_visible_height(mut self, height: f64) -> Self {
         self.style.maybe_max_visible_height = Some(Some(MaxHeight::Scalar(height)));
         self
@@ -117,6 +120,7 @@ impl<'a, T> DropDownList<'a, T> {
 
     /// Specifies that the list should be scrollable and should provide a `Scrollbar` to the right
     /// of the items.
+    #[inline]
     pub fn scrollbar_next_to(mut self) -> Self {
         self.style.scrollbar_position = Some(Some(widget::list::ScrollbarPosition::NextTo));
         self
@@ -124,54 +128,63 @@ impl<'a, T> DropDownList<'a, T> {
 
     /// Specifies that the list should be scrollable and should provide a `Scrollbar` that hovers
     /// above the right edge of the items and automatically hides when the user is not scrolling.
+    #[inline]
     pub fn scrollbar_on_top(mut self) -> Self {
         self.style.scrollbar_position = Some(Some(widget::list::ScrollbarPosition::OnTop));
         self
     }
 
     /// Even in the case that the list is scrollable, do not display a `Scrollbar`.
+    #[inline]
     pub fn no_scrollbar(mut self) -> Self {
         self.style.scrollbar_position = Some(None);
         self
     }
 
     /// Specify the width of the scrollbar.
+    #[inline]
     pub fn scrollbar_width(mut self, w: Scalar) -> Self {
         self.style.scrollbar_width = Some(Some(w));
         self
     }
 
     /// Specify the font used for displaying the label.
+    #[inline]
     pub fn label_font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.label_font_id = Some(Some(font_id));
         self
     }
 
     /// Align the labels to the left of their `Button`s' surface.
+    #[inline]
     pub fn left_justify_label(mut self) -> Self {
         self.style.label_justify = Some(text::Justify::Left);
         self
     }
 
     /// Align the labels to the right of their `Button`s' surface.
+    #[inline]
     pub fn right_justify_label(mut self) -> Self {
         self.style.label_justify = Some(text::Justify::Right);
         self
     }
 
     /// Center the labels to the their `Button`s' surface.
+    #[inline]
     pub fn center_justify_label(mut self) -> Self {
         self.style.label_justify = Some(text::Justify::Center);
         self
     }
 
     /// Specify the label's position relatively to `Button` along the *x* axis.
+    #[inline]
     pub fn label_x(mut self, x: position::Relative) -> Self {
         self.style.label_x = Some(x);
         self
     }
 
     /// Specify the label's position relatively to `Button` along the *y* axis.
+    #[inline]
     pub fn label_y(mut self, y: position::Relative) -> Self {
         self.style.label_y = Some(y);
         self
@@ -187,14 +200,17 @@ impl<'a, T> Widget for DropDownList<'a, T>
     type Style = Style;
     type Event = Option<Idx>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             menu_state: MenuState::Closed,
@@ -202,6 +218,7 @@ impl<'a, T> Widget for DropDownList<'a, T>
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -346,6 +363,7 @@ impl<'a, T> Widget for DropDownList<'a, T>
 impl Style {
 
     /// Style for a `Button` given this `Style`'s current state.
+    #[inline]
     pub fn button_style(&self, is_selected: bool) -> widget::button::Style {
         widget::button::Style {
             color: self.color.map(|c| if is_selected { c.highlighted() } else { c }),

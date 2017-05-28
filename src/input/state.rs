@@ -43,6 +43,7 @@ pub struct State {
 impl State {
 
     /// Returns a fresh new input state
+    #[inline]
     pub fn new() -> State {
         State{
             touch: fnv::FnvHashMap::default(),
@@ -145,6 +146,7 @@ pub mod mouse {
 
     impl Mouse {
         /// Construct a new default `Mouse`.
+        #[inline]
         pub fn new() -> Self {
             Mouse {
                 buttons: ButtonMap::new(),
@@ -156,6 +158,7 @@ pub mod mouse {
     impl ButtonPosition {
 
         /// If the mouse button is down, return a new one with position relative to the given `xy`.
+        #[inline]
         pub fn relative_to(self, xy: Point) -> Self {
             match self {
                 ButtonPosition::Down(pos, widget) =>
@@ -165,6 +168,7 @@ pub mod mouse {
         }
 
         /// Is the `ButtonPosition` down.
+        #[inline]
         pub fn is_down(&self) -> bool {
             match *self {
                 ButtonPosition::Down(_, _) => true,
@@ -173,6 +177,7 @@ pub mod mouse {
         }
 
         /// Is the `ButtonPosition` up.
+        #[inline]
         pub fn is_up(&self) -> bool {
             match *self {
                 ButtonPosition::Up => true,
@@ -182,6 +187,7 @@ pub mod mouse {
 
         /// Returns the position at which the button was pressed along with the widget that was
         /// under the mouse at the time of pressing if the position is `Down`.
+        #[inline]
         pub fn if_down(&self) -> Option<(Point, Option<widget::Id>)> {
             match *self {
                 ButtonPosition::Down(xy, widget) => Some((xy, widget)),
@@ -190,6 +196,7 @@ pub mod mouse {
         }
 
         /// Returns the position at which the button was pressed if it's down.
+        #[inline]
         pub fn xy_if_down(&self) -> Option<Point> {
             match *self {
                 ButtonPosition::Down(xy, _) => Some(xy),
@@ -202,6 +209,7 @@ pub mod mouse {
     impl ButtonMap {
 
         /// Returns a new button map with all states set to `None`
+        #[inline]
         pub fn new() -> Self {
             ButtonMap{
                 buttons: [ButtonPosition::Up; NUM_BUTTONS]
@@ -217,32 +225,38 @@ pub mod mouse {
         }
 
         /// The state of the left mouse button.
+        #[inline]
         pub fn left(&self) -> &ButtonPosition {
             &self[Button::Left]
         }
 
         /// The state of the middle mouse button.
+        #[inline]
         pub fn middle(&self) -> &ButtonPosition {
             &self[Button::Middle]
         }
 
         /// The state of the right mouse button.
+        #[inline]
         pub fn right(&self) -> &ButtonPosition {
             &self[Button::Right]
         }
 
         /// Sets the `Button` in the `Down` position.
+        #[inline]
         pub fn press(&mut self, button: Button, xy: Point, widget: Option<widget::Id>) {
             self.buttons[button_to_idx(button)] = ButtonPosition::Down(xy, widget);
         }
 
         /// Set's the `Button` in the `Up` position.
+        #[inline]
         pub fn release(&mut self, button: Button) {
             self.buttons[button_to_idx(button)] = ButtonPosition::Up;
         }
 
         /// An iterator yielding all pressed mouse buttons along with the location at which they
         /// were originally pressed.
+        #[inline]
         pub fn pressed(&self) -> PressedButtons {
             PressedButtons { buttons: self.buttons.iter().enumerate() }
         }

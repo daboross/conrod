@@ -171,6 +171,7 @@ impl<H: std::hash::BuildHasher> Selection<H> {
 
 impl ListSelect<Single, widget::list::Down, widget::list::Dynamic> {
     /// Construct a new ListSelect, allowing one selected item at a time.
+    #[inline]
     pub fn single(num_items: usize) -> Self {
         Self::new(num_items, Single)
     }
@@ -178,6 +179,7 @@ impl ListSelect<Single, widget::list::Down, widget::list::Dynamic> {
 
 impl ListSelect<Multiple, widget::list::Down, widget::list::Dynamic> {
     /// Construct a new ListSelect, allowing multiple selected items.
+    #[inline]
     pub fn multiple(num_items: usize) -> Self {
         Self::new(num_items, Multiple)
     }
@@ -190,6 +192,7 @@ impl<M, D, S> ListSelect<M, D, S>
 {
 
     /// Flows items from top to bottom.
+    #[inline]
     pub fn flow_down(self) -> ListSelect<M, widget::list::Down, S> {
         let ListSelect { common, num_items, mode, item_size, style, item_instantiation, .. } = self;
         ListSelect {
@@ -204,6 +207,7 @@ impl<M, D, S> ListSelect<M, D, S>
     }
 
     /// Flows items from left to right.
+    #[inline]
     pub fn flow_right(self) -> ListSelect<M, widget::list::Right, S> {
         let ListSelect { common, num_items, mode, item_size, style, item_instantiation, .. } = self;
         ListSelect {
@@ -218,6 +222,7 @@ impl<M, D, S> ListSelect<M, D, S>
     }
 
     /// Flows items from right to left.
+    #[inline]
     pub fn flow_left(self) -> ListSelect<M, widget::list::Left, S> {
         let ListSelect { common, num_items, mode, item_size, style, item_instantiation, .. } = self;
         ListSelect {
@@ -232,6 +237,7 @@ impl<M, D, S> ListSelect<M, D, S>
     }
 
     /// Flows items from bottom to top.
+    #[inline]
     pub fn flow_up(self) -> ListSelect<M, widget::list::Up, S> {
         let ListSelect { common, num_items, mode, item_size, style, item_instantiation, .. } = self;
         ListSelect {
@@ -248,6 +254,7 @@ impl<M, D, S> ListSelect<M, D, S>
     /// Specify a fixed item size, where size is a `Scalar` in the direction that the `List` is
     /// flowing. When a `List` is constructed with this method, all items will have a fixed, equal
     /// length.
+    #[inline]
     pub fn item_size(self, length: Scalar) -> ListSelect<M, D, widget::list::Fixed> {
         let ListSelect { common, num_items, mode, direction, style, .. } = self;
         ListSelect {
@@ -267,6 +274,7 @@ impl<M> ListSelect<M, widget::list::Down, widget::list::Dynamic> {
     ///
     /// This method is only useful when using a custom `Mode`, otherwise `ListSelect::single` or
     /// `ListSelect::multiple` will probably be more suitable.
+    #[inline]
     pub fn new(num_items: usize, mode: M) -> Self
         where M: Mode,
     {
@@ -286,6 +294,7 @@ impl<M, D, S> ListSelect<M, D, S> {
 
     /// Specifies that the `List` should be scrollable and should provide a `Scrollbar` to the
     /// right of the items.
+    #[inline]
     pub fn scrollbar_next_to(mut self) -> Self {
         self.style.scrollbar_position = Some(Some(widget::list::ScrollbarPosition::NextTo));
         self
@@ -293,18 +302,21 @@ impl<M, D, S> ListSelect<M, D, S> {
 
     /// Specifies that the `List` should be scrollable and should provide a `Scrollbar` that hovers
     /// above the right edge of the items and automatically hides when the user is not scrolling.
+    #[inline]
     pub fn scrollbar_on_top(mut self) -> Self {
         self.style.scrollbar_position = Some(Some(widget::list::ScrollbarPosition::OnTop));
         self
     }
 
     /// The width of the `Scrollbar`.
+    #[inline]
     pub fn scrollbar_thickness(mut self, w: Scalar) -> Self {
         self.style.scrollbar_thickness = Some(Some(w));
         self
     }
 
     /// The color of the `Scrollbar`.
+    #[inline]
     pub fn scrollbar_color(mut self, color: Color) -> Self {
         self.style.scrollbar_color = Some(color);
         self
@@ -324,6 +336,7 @@ impl<M, D> ListSelect<M, D, widget::list::Fixed> {
     /// Note: This may cause significantly heavier CPU load for lists containing many items (100+).
     /// We only recommend using this when absolutely necessary as large lists may cause unnecessary
     /// bloating within the widget graph, and in turn result in greater traversal times.
+    #[inline]
     pub fn instantiate_all_items(mut self) -> Self {
         self.item_instantiation = widget::list::ItemInstantiation::All;
         self
@@ -334,6 +347,7 @@ impl<M, D> ListSelect<M, D, widget::list::Fixed> {
     /// a minimum.
     ///
     /// This is the default behaviour for `ListSelect`s with fixed item sizes.
+    #[inline]
     pub fn instantiate_only_visible_items(mut self) -> Self {
         self.item_instantiation = widget::list::ItemInstantiation::OnlyVisible;
         self
@@ -350,14 +364,17 @@ impl<M, D, S> Widget for ListSelect<M, D, S>
     type Style = widget::list::Style;
     type Event = (Events<M, D, S>, Option<widget::list::Scrollbar<D::Axis>>);
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
@@ -365,6 +382,7 @@ impl<M, D, S> Widget for ListSelect<M, D, S>
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -657,6 +675,7 @@ impl Mode for Multiple {
 }
 
 impl Direction for widget::list::Down {
+    #[inline]
     fn key_direction(key: input::Key) -> Option<ListDirection> {
         match key {
             input::Key::Down => Some(ListDirection::Forward),
@@ -667,6 +686,7 @@ impl Direction for widget::list::Down {
 }
 
 impl Direction for widget::list::Up {
+    #[inline]
     fn key_direction(key: input::Key) -> Option<ListDirection> {
         match key {
             input::Key::Up => Some(ListDirection::Forward),
@@ -677,6 +697,7 @@ impl Direction for widget::list::Up {
 }
 
 impl Direction for widget::list::Right {
+    #[inline]
     fn key_direction(key: input::Key) -> Option<ListDirection> {
         match key {
             input::Key::Right => Some(ListDirection::Forward),
@@ -687,6 +708,7 @@ impl Direction for widget::list::Right {
 }
 
 impl Direction for widget::list::Left {
+    #[inline]
     fn key_direction(key: input::Key) -> Option<ListDirection> {
         match key {
             input::Key::Left => Some(ListDirection::Forward),

@@ -92,6 +92,7 @@ pub enum Cursor {
 impl<'a> TextEdit<'a> {
 
     /// Construct a TextEdit widget.
+    #[inline]
     pub fn new(text: &'a str) -> Self {
         TextEdit {
             common: widget::CommonBuilder::new(),
@@ -104,6 +105,7 @@ impl<'a> TextEdit<'a> {
     /// character.
     ///
     /// This is the default setting.
+    #[inline]
     pub fn wrap_by_whitespace(self) -> Self {
         self.line_wrap(Wrap::Whitespace)
     }
@@ -112,46 +114,55 @@ impl<'a> TextEdit<'a> {
     /// width-exceeding character.
     ///
     /// Calling this method causes the `TextEdit` to wrap text at the first exceeding character.
+    #[inline]
     pub fn wrap_by_character(self) -> Self {
         self.line_wrap(Wrap::Character)
     }
 
     /// Align the text to the left of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn left_justify(self) -> Self {
         self.justify(text::Justify::Left)
     }
 
     /// Align the text to the middle of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn center_justify(self) -> Self {
         self.justify(text::Justify::Center)
     }
 
     /// Align the text to the right of its bounding **Rect**'s *x* axis range.
+    #[inline]
     pub fn right_justify(self) -> Self {
         self.justify(text::Justify::Right)
     }
 
     /// Align the text to the left of its bounding **Rect**'s *y* axis range.
+    #[inline]
     pub fn align_text_bottom(self) -> Self {
         self.y_align_text(Align::Start)
     }
 
     /// Align the text to the middle of its bounding **Rect**'s *y* axis range.
+    #[inline]
     pub fn align_text_y_middle(self) -> Self {
         self.y_align_text(Align::Middle)
     }
 
     /// Align the text to the right of its bounding **Rect**'s *y* axis range.
+    #[inline]
     pub fn align_text_top(self) -> Self {
         self.y_align_text(Align::End)
     }
 
     /// Align the text to the middle of its bounding **Rect**.
+    #[inline]
     pub fn align_text_middle(self) -> Self {
         self.center_justify().align_text_y_middle()
     }
 
     /// Specify the font used for displaying the text.
+    #[inline]
     pub fn font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.font_id = Some(Some(font_id));
         self
@@ -177,14 +188,17 @@ impl<'a> Widget for TextEdit<'a> {
     // - Enumerates cursor movement and range selection.
     type Event = Option<String>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             cursor: Cursor::Idx(text::cursor::Index { line: 0, char: 0 }),
@@ -194,6 +208,7 @@ impl<'a> Widget for TextEdit<'a> {
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

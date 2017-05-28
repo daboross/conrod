@@ -75,6 +75,7 @@ pub struct Area {
 impl<'a> CollapsibleArea<'a> {
 
     /// Begin building the `CollapsibleArea` widget.
+    #[inline]
     pub fn new(is_open: bool, text: &'a str) -> Self {
         CollapsibleArea {
             common: widget::CommonBuilder::new(),
@@ -85,18 +86,21 @@ impl<'a> CollapsibleArea<'a> {
     }
 
     /// Specify the color of the `CollapsibleArea`'s label.
+    #[inline]
     pub fn label_color(mut self, color: Color) -> Self {
         self.style.label_color = Some(color);
         self
     }
 
     /// Specify the font size for the `CollapsibleArea`'s label.
+    #[inline]
     pub fn label_font_size(mut self, font_size: FontSize) -> Self {
         self.style.label_font_size = Some(Some(font_size));
         self
     }
 
     /// Specify the font for the `CollapsibleArea`'s label.
+    #[inline]
     pub fn label_font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.label_font_id = Some(Some(font_id));
         self
@@ -109,20 +113,24 @@ impl<'a> Widget for CollapsibleArea<'a> {
     type Style = Style;
     type Event = (Option<Area>, Option<Event>);
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Style {
         self.style.clone()
     }
@@ -213,6 +221,7 @@ impl<'a> Widget for CollapsibleArea<'a> {
 }
 
 impl<'a> Colorable for CollapsibleArea<'a> {
+    #[inline]
     fn color(mut self, color: Color) -> Self {
         self.style.color = Some(color);
         self
@@ -220,10 +229,12 @@ impl<'a> Colorable for CollapsibleArea<'a> {
 }
 
 impl<'a> Borderable for CollapsibleArea<'a> {
+    #[inline]
     fn border(mut self, border: Scalar) -> Self {
         self.style.border = Some(border);
         self
     }
+    #[inline]
     fn border_color(mut self, color: Color) -> Self {
         self.style.border_color = Some(color);
         self
@@ -232,6 +243,7 @@ impl<'a> Borderable for CollapsibleArea<'a> {
 
 impl Event {
     /// Returns whether or not the `Event` results in an open collapsible area.
+    #[inline]
     pub fn is_open(&self) -> bool {
         match *self {
             Event::Open => true,

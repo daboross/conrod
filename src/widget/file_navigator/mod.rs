@@ -126,6 +126,7 @@ pub enum Event {
 impl<'a> FileNavigator<'a> {
 
     /// Begin building a `FileNavigator` widget that displays only files of the given types.
+    #[inline]
     pub fn new(starting_directory: &'a std::path::Path, types: Types<'a>) -> Self {
         FileNavigator {
             common: widget::CommonBuilder::new(),
@@ -137,6 +138,7 @@ impl<'a> FileNavigator<'a> {
     }
 
     /// Begin building a `FileNavigator` that will display all file types.
+    #[inline]
     pub fn all(starting_directory: &'a std::path::Path) -> Self {
         Self::new(starting_directory, Types::All)
     }
@@ -146,23 +148,27 @@ impl<'a> FileNavigator<'a> {
     ///
     /// i.e. A `FileNavigator` used for navigating lossless audio files might use the following
     /// list of extensions: `&["wav", "wave", "aiff"]`.
+    #[inline]
     pub fn with_extension(starting_directory: &'a std::path::Path, exts: &'a [&'a str]) -> Self {
         Self::new(starting_directory, Types::WithExtension(exts))
     }
 
     /// The color of the unselected entries within each `DirectoryView`.
+    #[inline]
     pub fn unselected_color(mut self, color: Color) -> Self {
         self.style.unselected_color = Some(Some(color));
         self
     }
 
     /// The color of the `Text` used to display the file names.
+    #[inline]
     pub fn text_color(mut self, color: Color) -> Self {
         self.style.text_color = Some(Some(color));
         self
     }
 
     /// Whether to show hidden files and directories.
+    #[inline]
     pub fn show_hidden_files(mut self, show_hidden: bool) -> Self {
         self.show_hidden = show_hidden;
         self
@@ -180,14 +186,17 @@ impl<'a> Widget for FileNavigator<'a> {
     type Style = Style;
     type Event = Vec<Event>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             directory_stack: Vec::new(),
@@ -196,6 +205,7 @@ impl<'a> Widget for FileNavigator<'a> {
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

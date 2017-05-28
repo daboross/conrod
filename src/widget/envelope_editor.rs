@@ -113,6 +113,7 @@ impl<'a, E> EnvelopeEditor<'a, E>
 {
 
     /// Construct an EnvelopeEditor widget.
+    #[inline]
     pub fn new(env: &'a [E], min_x: E::X, max_x: E::X, min_y: E::Y, max_y: E::Y) -> Self {
         EnvelopeEditor {
             common: widget::CommonBuilder::new(),
@@ -127,6 +128,7 @@ impl<'a, E> EnvelopeEditor<'a, E>
     }
 
     /// Specify the font used for displaying the label.
+    #[inline]
     pub fn label_font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.label_font_id = Some(Some(font_id));
         self
@@ -223,14 +225,17 @@ impl<'a, E> Widget for EnvelopeEditor<'a, E>
     type Style = Style;
     type Event = Vec<Event<E>>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             pressed_point: None,
@@ -238,6 +243,7 @@ impl<'a, E> Widget for EnvelopeEditor<'a, E>
         }
     }
 
+    #[inline]
     fn style(&self) -> Style {
         self.style.clone()
     }

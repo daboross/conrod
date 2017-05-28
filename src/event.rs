@@ -323,6 +323,7 @@ pub struct Scroll {
 
 impl Motion {
     /// Returns a copy of the `Motion` relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> Motion {
         let motion = match self.motion {
             input::Motion::MouseCursor { x, y } =>
@@ -338,6 +339,7 @@ impl Motion {
 
 impl Button {
     /// Returns a copy of the Button relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> Button {
         match *self {
             Button::Mouse(m_button, self_xy) => Button::Mouse(m_button, vec2_sub(self_xy, xy)),
@@ -349,6 +351,7 @@ impl Button {
 impl Press {
 
     /// Returns a copy of the Press relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> Press {
         Press {
             button: self.button.relative_to(xy),
@@ -357,6 +360,7 @@ impl Press {
     }
 
     /// If the `Press` event represents the pressing of a mouse button, return `Some`.
+    #[inline]
     pub fn mouse(self) -> Option<MousePress> {
         match self.button {
             Button::Mouse(button, xy) =>
@@ -370,6 +374,7 @@ impl Press {
     }
 
     /// If the `Press` event represents the pressing of keyboard button, return `Some`.
+    #[inline]
     pub fn key(self) -> Option<KeyPress> {
         match self.button {
             Button::Keyboard(key) =>
@@ -386,6 +391,7 @@ impl Press {
 impl Release {
 
     /// Returns a copy of the Release relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> Release {
         Release {
             button: self.button.relative_to(xy),
@@ -394,6 +400,7 @@ impl Release {
     }
 
     /// If the `Release` event represents the releasing of a mouse button, return `Some`.
+    #[inline]
     pub fn mouse(self) -> Option<MouseRelease> {
         match self.button {
             Button::Mouse(button, xy) =>
@@ -407,6 +414,7 @@ impl Release {
     }
 
     /// If the `Release` event represents the release of keyboard button, return `Some`.
+    #[inline]
     pub fn key(self) -> Option<KeyRelease> {
         match self.button {
             Button::Keyboard(key) =>
@@ -422,6 +430,7 @@ impl Release {
 
 impl Tap {
     /// Returns a copy of the `Tap` relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> Self {
         Tap {
             xy: vec2_sub(self.xy, xy),
@@ -432,6 +441,7 @@ impl Tap {
 
 impl Click {
     /// Returns a copy of the Click relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> Click {
         Click {
             xy: vec2_sub(self.xy, xy),
@@ -442,6 +452,7 @@ impl Click {
 
 impl DoubleClick {
     /// Returns a copy of the DoubleClick relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> DoubleClick {
         DoubleClick {
             xy: vec2_sub(self.xy, xy),
@@ -452,6 +463,7 @@ impl DoubleClick {
 
 impl Drag {
     /// Returns a copy of the Drag relative to the given `xy`
+    #[inline]
     pub fn relative_to(&self, xy: Point) -> Drag {
         Drag{
             origin: vec2_sub(self.origin, xy),
@@ -464,84 +476,98 @@ impl Drag {
 
 
 impl From<input::Motion> for Input {
+    #[inline]
     fn from(motion: input::Motion) -> Self {
         Input::Motion(motion)
     }
 }
 
 impl From<input::Touch> for Input {
+    #[inline]
     fn from(touch: input::Touch) -> Self {
         Input::Touch(touch)
     }
 }
 
 impl From<Ui> for Event {
+    #[inline]
     fn from(ui: Ui) -> Self {
         Event::Ui(ui)
     }
 }
 
 impl From<Input> for Event {
+    #[inline]
     fn from(input: Input) -> Self {
         Event::Raw(input)
     }
 }
 
 impl From<Text> for Widget {
+    #[inline]
     fn from(text: Text) -> Self {
         Widget::Text(text)
     }
 }
 
 impl From<Motion> for Widget {
+    #[inline]
     fn from(motion: Motion) -> Self {
         Widget::Motion(motion)
     }
 }
 
 impl From<input::Touch> for Widget {
+    #[inline]
     fn from(touch: input::Touch) -> Self {
         Widget::Touch(touch)
     }
 }
 
 impl From<Press> for Widget {
+    #[inline]
     fn from(press: Press) -> Self {
         Widget::Press(press)
     }
 }
 
 impl From<Release> for Widget {
+    #[inline]
     fn from(release: Release) -> Self {
         Widget::Release(release)
     }
 }
 
 impl From<Click> for Widget {
+    #[inline]
     fn from(click: Click) -> Self {
         Widget::Click(click)
     }
 }
 
 impl From<DoubleClick> for Widget {
+    #[inline]
     fn from(double_click: DoubleClick) -> Self {
         Widget::DoubleClick(double_click)
     }
 }
 
 impl From<Tap> for Widget {
+    #[inline]
     fn from(tap: Tap) -> Self {
         Widget::Tap(tap)
     }
 }
 
 impl From<Scroll> for Widget {
+    #[inline]
     fn from(scroll: Scroll) -> Self {
         Widget::Scroll(scroll)
     }
 }
 
 impl From<Drag> for Widget {
+    #[inline]
     fn from(drag: Drag) -> Self {
         Widget::Drag(drag)
     }

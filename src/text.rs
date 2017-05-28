@@ -46,6 +46,7 @@ pub enum Justify {
 
 /// Determine the total height of a block of text with the given number of lines, font size and
 /// `line_spacing` (the space that separates each line of text).
+#[inline]
 pub fn height(num_lines: usize, font_size: FontSize, line_spacing: Scalar) -> Scalar {
     if num_lines > 0 {
         num_lines as Scalar * font_size as Scalar + (num_lines - 1) as Scalar * line_spacing
@@ -57,6 +58,7 @@ pub fn height(num_lines: usize, font_size: FontSize, line_spacing: Scalar) -> Sc
 
 /// Produce an iterator yielding each line within the given `text` as a new `&str`, where the
 /// start and end indices into each line are provided by the given iterator.
+#[inline]
 pub fn lines<I>(text: &str, ranges: I) -> Lines<I>
     where I: Iterator<Item=std::ops::Range<usize>>,
 {
@@ -68,11 +70,13 @@ pub fn lines<I>(text: &str, ranges: I) -> Lines<I>
 
 
 /// Converts the given font size in "points" to its font size in pixels.
+#[inline]
 pub fn pt_to_px(font_size_in_points: FontSize) -> f32 {
     (font_size_in_points * 4) as f32 / 3.0
 }
 
 /// Converts the given font size in "points" to a uniform `rusttype::Scale`.
+#[inline]
 pub fn pt_to_scale(font_size_in_points: FontSize) -> Scale {
     Scale::uniform(pt_to_px(font_size_in_points))
 }
@@ -133,6 +137,7 @@ pub mod font {
     impl Id {
 
         /// Returns the inner `usize` from the `Id`.
+        #[inline]
         pub fn index(self) -> usize {
             self.0
         }
@@ -142,6 +147,7 @@ pub mod font {
     impl Map {
 
         /// Construct the new, empty `Map`.
+        #[inline]
         pub fn new() -> Self {
             Map {
                 next_index: 0,
@@ -150,11 +156,13 @@ pub mod font {
         }
 
         /// Borrow the `rusttype::Font` associated with the given `font::Id`.
+        #[inline]
         pub fn get(&self, id: Id) -> Option<&super::Font> {
             self.map.get(&id)
         }
 
         /// Adds the given `rusttype::Font` to the `Map` and returns a unique `Id` for it.
+        #[inline]
         pub fn insert(&mut self, font: super::Font) -> Id {
             let index = self.next_index;
             self.next_index = index.wrapping_add(1);
@@ -334,6 +342,7 @@ pub mod glyph {
     ///
     /// This is useful when information about character positioning is needed when reasoning about
     /// text layout.
+    #[inline]
     pub fn rects_per_line<'a, I>(lines_with_rects: I,
                                  font: &'a super::Font,
                                  font_size: FontSize) -> RectsPerLine<'a, I>
@@ -353,6 +362,7 @@ pub mod glyph {
     /// will be produced.
     ///
     /// All lines that have no selected `Rect`s will be skipped.
+    #[inline]
     pub fn selected_rects_per_line<'a, I>(lines_with_rects: I,
                                           font: &'a super::Font,
                                           font_size: FontSize,
@@ -982,6 +992,7 @@ pub mod line {
     impl Break {
 
         /// Return the index at which the break occurs.
+        #[inline]
         pub fn byte_index(self) -> usize {
             match self {
                 Break::Wrap { byte, .. } |
@@ -993,6 +1004,7 @@ pub mod line {
         /// Return the index of the `char` at which the break occurs.
         ///
         /// To clarify, this index is to be used in relation to the `Chars` iterator.
+        #[inline]
         pub fn char_index(self) -> usize {
             match self {
                 Break::Wrap { char, .. } |
@@ -1023,21 +1035,25 @@ pub mod line {
     impl Info {
 
         /// The end of the byte index range for indexing into the slice.
+        #[inline]
         pub fn end_byte(&self) -> usize {
             self.end_break.byte_index()
         }
 
         /// The end of the index range for indexing into the slice.
+        #[inline]
         pub fn end_char(&self) -> usize {
             self.end_break.char_index()
         }
 
         /// The index range for indexing (via bytes) into the original str slice.
+        #[inline]
         pub fn byte_range(self) -> std::ops::Range<usize> {
             self.start_byte..self.end_byte()
         }
 
         /// The index range for indexing into a `char` iterator over the original str slice.
+        #[inline]
         pub fn char_range(self) -> std::ops::Range<usize> {
             self.start_char..self.end_char()
         }
@@ -1048,6 +1064,7 @@ pub mod line {
 
         /// Converts `Self` into an `Infos` whose lines are wrapped at the character that first
         /// causes the line width to exceed the given `max_width`.
+        #[inline]
         pub fn wrap_by_character(mut self, max_width: Scalar) -> Self {
             self.next_break_fn = next_break_by_character;
             self.max_width = max_width;
@@ -1056,6 +1073,7 @@ pub mod line {
 
         /// Converts `Self` into an `Infos` whose lines are wrapped at the whitespace prior to the
         /// character that causes the line width to exceed the given `max_width`.
+        #[inline]
         pub fn wrap_by_whitespace(mut self, max_width: Scalar) -> Self {
             self.next_break_fn = next_break_by_whitespace;
             self.max_width = max_width;

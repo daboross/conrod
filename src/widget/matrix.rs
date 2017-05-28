@@ -93,6 +93,7 @@ pub struct Element {
 impl Matrix {
 
     /// Create a widget matrix context.
+    #[inline]
     pub fn new(cols: usize, rows: usize) -> Self {
         Matrix {
             common: widget::CommonBuilder::new(),
@@ -103,6 +104,7 @@ impl Matrix {
     }
 
     /// A builder method for adding padding to the cell.
+    #[inline]
     pub fn cell_padding(mut self, w: Scalar, h: Scalar) -> Self {
         self.style.cell_pad_w = Some(w);
         self.style.cell_pad_h = Some(h);
@@ -117,18 +119,22 @@ impl Widget for Matrix {
     type Style = Style;
     type Event = Elements;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, _: widget::id::Generator) -> Self::State {
         State { indices: Vec::new() }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

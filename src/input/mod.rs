@@ -115,6 +115,7 @@ pub mod touch {
     impl Id {
 
         /// Construct a new identifier.
+        #[inline]
         pub fn new(id: u64) -> Self {
             Id(id)
         }
@@ -124,6 +125,7 @@ pub mod touch {
     impl Touch {
 
         /// Returns a copy of the `Touch` relative to the given `xy`.
+        #[inline]
         pub fn relative_to(&self, xy: Point) -> Self {
             Touch {
                 xy: [self.xy[0] - xy[0], self.xy[1] - xy[1]],

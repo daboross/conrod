@@ -67,6 +67,7 @@ pub struct State {
 impl<'a, T> Slider<'a, T> {
 
     /// Construct a new Slider widget.
+    #[inline]
     pub fn new(value: T, min: T, max: T) -> Self {
         Slider {
             common: widget::CommonBuilder::new(),
@@ -81,6 +82,7 @@ impl<'a, T> Slider<'a, T> {
     }
 
     /// Specify the font used for displaying the label.
+    #[inline]
     pub fn label_font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.label_font_id = Some(Some(font_id));
         self
@@ -100,24 +102,29 @@ impl<'a, T> Widget for Slider<'a, T>
     type Style = Style;
     type Event = Option<T>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
 
+    #[inline]
     fn kid_area(&self, args: widget::KidAreaArgs<Self>) -> widget::KidArea {
         const LABEL_PADDING: Scalar = 10.0;
         widget::KidArea {

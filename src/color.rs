@@ -83,10 +83,12 @@ pub fn hsl(hue: f32, saturation: f32, lightness: f32) -> Color {
 
 
 /// Produce a gray based on the input. 0.0 is white, 1.0 is black.
+#[inline]
 pub fn grayscale(p: f32) -> Color {
     Color::Hsla(0.0, 0.0, 1.0-p, 1.0)
 }
 /// Produce a gray based on the input. 0.0 is white, 1.0 is black.
+#[inline]
 pub fn greyscale(p: f32) -> Color {
     Color::Hsla(0.0, 0.0, 1.0-p, 1.0)
 }
@@ -351,12 +353,14 @@ pub enum Gradient {
 
 
 /// Create a linear gradient.
+#[inline]
 pub fn linear(start: (f64, f64), end: (f64, f64), colors: Vec<(f64, Color)>) -> Gradient {
     Gradient::Linear(start, end, colors)
 }
 
 
 /// Create a radial gradient. 
+#[inline]
 pub fn radial(start: (f64, f64), start_r: f64,
               end: (f64, f64), end_r: f64,
               colors: Vec<(f64, Color)>) -> Gradient {
@@ -461,21 +465,25 @@ pub trait Colorable: Sized {
     fn color(self, color: Color) -> Self;
 
     /// Set the color of the widget from rgba values.
+    #[inline]
     fn rgba(self, r: f32, g: f32, b: f32, a: f32) -> Self {
         self.color(rgba(r, g, b, a))
     }
 
     /// Set the color of the widget from rgb values.
+    #[inline]
     fn rgb(self, r: f32, g: f32, b: f32) -> Self {
         self.color(rgb(r, g, b))
     }
 
     /// Set the color of the widget from hsla values.
+    #[inline]
     fn hsla(self, h: f32, s: f32, l: f32, a: f32) -> Self {
         self.color(hsla(h, s, l, a))
     }
 
     /// Set the color of the widget from hsl values.
+    #[inline]
     fn hsl(self, h: f32, s: f32, l: f32) -> Self {
         self.color(hsl(h, s, l))
     }

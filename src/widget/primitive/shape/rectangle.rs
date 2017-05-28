@@ -36,6 +36,7 @@ pub enum Kind {
 impl Rectangle {
 
     /// Build a rectangle with the dimensions and style.
+    #[inline]
     pub fn styled(dim: Dimensions, style: Style) -> Self {
         Rectangle {
             common: widget::CommonBuilder::new(),
@@ -44,21 +45,25 @@ impl Rectangle {
     }
 
     /// Build a new filled rectangle.
+    #[inline]
     pub fn fill(dim: Dimensions) -> Self {
         Rectangle::styled(dim, Style::fill())
     }
 
     /// Build a new filled rectangle widget filled with the given color.
+    #[inline]
     pub fn fill_with(dim: Dimensions, color: Color) -> Self {
         Rectangle::styled(dim, Style::fill_with(color))
     }
 
     /// Build a new outlined rectangle widget.
+    #[inline]
     pub fn outline(dim: Dimensions) -> Self {
         Rectangle::styled(dim, Style::outline())
     }
 
     /// Build an outlined rectangle rather than a filled one.
+    #[inline]
     pub fn outline_styled(dim: Dimensions, line_style: widget::line::Style) -> Self {
         Rectangle::styled(dim, Style::outline_styled(line_style))
     }
@@ -71,20 +76,24 @@ impl Widget for Rectangle {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, _: widget::id::Generator) -> Self::State {
         State {
             kind: Kind::Fill,
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -107,6 +116,7 @@ impl Widget for Rectangle {
 
 
 impl Colorable for Rectangle {
+    #[inline]
     fn color(mut self, color: Color) -> Self {
         self.style.set_color(color);
         self

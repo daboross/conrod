@@ -10,6 +10,7 @@ use widget;
 pub struct Circle;
 
 
+#[inline]
 fn rad_to_dim(radius: Scalar) -> Dimensions {
     let side = radius * 2.0;
     [side, side]
@@ -19,26 +20,31 @@ fn rad_to_dim(radius: Scalar) -> Dimensions {
 impl Circle {
 
     /// Build a circular **Oval** with the given dimensions and style.
+    #[inline]
     pub fn styled(radius: Scalar, style: Style) -> Oval {
         Oval::styled(rad_to_dim(radius), style)
     }
 
     /// Build a new **Fill**ed circular **Oval**.
+    #[inline]
     pub fn fill(radius: Scalar) -> Oval {
         Oval::fill(rad_to_dim(radius))
     }
 
     /// Build a new circular **Oval** **Fill**ed with the given color.
+    #[inline]
     pub fn fill_with(radius: Scalar, color: Color) -> Oval {
         Oval::fill_with(rad_to_dim(radius), color)
     }
 
     /// Build a new circular **Outline**d **Oval** widget.
+    #[inline]
     pub fn outline(radius: Scalar) -> Oval {
         Oval::outline(rad_to_dim(radius))
     }
 
     /// Build a new circular **Oval** **Outline**d with the given style.
+    #[inline]
     pub fn outline_styled(radius: Scalar, line_style: widget::line::Style) -> Oval {
         Oval::outline_styled(rad_to_dim(radius), line_style)
     }

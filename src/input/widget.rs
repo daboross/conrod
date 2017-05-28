@@ -166,6 +166,7 @@ impl<'a> Widget<'a> {
     /// Filters out only the events that directly pertain to the widget.
     ///
     /// All events will also be made relative to the widget's own (0, 0) origin.
+    #[inline]
     pub fn for_widget(idx: widget::Id, rect: Rect, global: &'a input::Global) -> Self {
         Widget {
             global: global,
@@ -207,11 +208,13 @@ impl<'a> Widget<'a> {
     }
 
     /// Filters all events yielded by `Self::events` other than `event::Press`es.
+    #[inline]
     pub fn presses(&self) -> Presses<'a> {
         Presses { events: self.events() }
     }
 
     /// Filters all events yielded by `Self::events` other than `event::Release`es.
+    #[inline]
     pub fn releases(&self) -> Releases<'a> {
         Releases { events: self.events() }
     }
@@ -228,6 +231,7 @@ impl<'a> Widget<'a> {
     ///
     /// A _tap_ is determined to have occured if a touch interaction both started and ended over
     /// the widget.
+    #[inline]
     pub fn taps(&self) -> Taps<'a> {
         Taps { events: self.events() }
     }
@@ -236,6 +240,7 @@ impl<'a> Widget<'a> {
     ///
     /// Only events that occurred while the widget was capturing the device that did the dragging
     /// will be yielded.
+    #[inline]
     pub fn drags(&self) -> Drags<'a> {
         Drags { events: self.events() }
     }
@@ -244,11 +249,13 @@ impl<'a> Widget<'a> {
     /// since the last time `Ui::set_widgets` was called.
     ///
     /// Only events that occurred while the widget was capturing the keyboard will be yielded.
+    #[inline]
     pub fn texts(&self) -> Texts<'a> {
         Texts { events: self.events() }
     }
 
     /// Produce an iterator that yields only the `Scroll` events yielded by the `Events` iterator.
+    #[inline]
     pub fn scrolls(&self) -> Scrolls<'a> {
         Scrolls { events: self.events() }
     }
@@ -258,16 +265,19 @@ impl<'a> Widget<'a> {
 impl<'a> Mouse<'a> {
 
     /// The absolute position of the mouse within the window.
+    #[inline]
     pub fn abs_xy(&self) -> Point {
         self.mouse_abs_xy
     }
 
     /// The position of the mouse relative to the middle of the widget's `Rect`.
+    #[inline]
     pub fn rel_xy(&self) -> Point {
         utils::vec2_sub(self.mouse_abs_xy, self.rect.xy())
     }
 
     /// Is the mouse currently over the widget.
+    #[inline]
     pub fn is_over(&self) -> bool {
         self.rect.is_over(self.mouse_abs_xy)
     }
@@ -277,6 +287,7 @@ impl<'a> Mouse<'a> {
 impl<'a> Presses<'a> {
 
     /// Produces an `Iterator` that yields only the press events that correspond with mouse buttons.
+    #[inline]
     pub fn mouse(self) -> MousePresses<'a> {
         MousePresses {
             presses: self,
@@ -285,6 +296,7 @@ impl<'a> Presses<'a> {
 
     /// Produces an `Iterator` that yields only the press events that correspond with keyboard
     /// buttons.
+    #[inline]
     pub fn key(self) -> KeyPresses<'a> {
         KeyPresses {
             presses: self,
@@ -296,6 +308,7 @@ impl<'a> Presses<'a> {
 impl<'a> MousePresses<'a> {
 
     /// Produces an `Iterator` that yields only events associated with the given mouse button.
+    #[inline]
     pub fn button(self, button: input::MouseButton) -> MouseButtonPresses<'a> {
         MouseButtonPresses {
             mouse_presses: self,
@@ -304,16 +317,19 @@ impl<'a> MousePresses<'a> {
     }
 
     /// Produces an `Iterator` that yields only the left mouse button press events.
+    #[inline]
     pub fn left(self) -> MouseButtonPresses<'a> {
         self.button(input::MouseButton::Left)
     }
 
     /// Produces an `Iterator` that yields only the middle mouse button press events.
+    #[inline]
     pub fn middle(self) -> MouseButtonPresses<'a> {
         self.button(input::MouseButton::Middle)
     }
 
     /// Produces an `Iterator` that yields only the right mouse button press events.
+    #[inline]
     pub fn right(self) -> MouseButtonPresses<'a> {
         self.button(input::MouseButton::Right)
     }
@@ -324,6 +340,7 @@ impl<'a> Releases<'a> {
 
     /// Produces an `Iterator` that yields only the release events that correspond with mouse
     /// buttons.
+    #[inline]
     pub fn mouse(self) -> MouseReleases<'a> {
         MouseReleases {
             releases: self,
@@ -332,6 +349,7 @@ impl<'a> Releases<'a> {
 
     /// Produces an `Iterator` that yields only the release events that correspond with keyboard
     /// buttons.
+    #[inline]
     pub fn key(self) -> KeyReleases<'a> {
         KeyReleases {
             releases: self,
@@ -343,6 +361,7 @@ impl<'a> Releases<'a> {
 impl<'a> MouseReleases<'a> {
 
     /// Produces an `Iterator` that yields only events associated with the given mouse button.
+    #[inline]
     pub fn button(self, button: input::MouseButton) -> MouseButtonReleases<'a> {
         MouseButtonReleases {
             mouse_releases: self,
@@ -351,16 +370,19 @@ impl<'a> MouseReleases<'a> {
     }
 
     /// Produces an `Iterator` that yields only the left mouse button release events.
+    #[inline]
     pub fn left(self) -> MouseButtonReleases<'a> {
         self.button(input::MouseButton::Left)
     }
 
     /// Produces an `Iterator` that yields only the middle mouse button release events.
+    #[inline]
     pub fn middle(self) -> MouseButtonReleases<'a> {
         self.button(input::MouseButton::Middle)
     }
 
     /// Produces an `Iterator` that yields only the right mouse button release events.
+    #[inline]
     pub fn right(self) -> MouseButtonReleases<'a> {
         self.button(input::MouseButton::Right)
     }
@@ -370,6 +392,7 @@ impl<'a> MouseReleases<'a> {
 impl<'a> Clicks<'a> {
 
     /// Yield only the `Click`s that occurred from the given button.
+    #[inline]
     pub fn button(self, button: input::MouseButton) -> ButtonClicks<'a> {
         ButtonClicks {
             clicks: self,
@@ -378,16 +401,19 @@ impl<'a> Clicks<'a> {
     }
 
     /// Yield only left mouse button `Click`s.
+    #[inline]
     pub fn left(self) -> ButtonClicks<'a> {
         self.button(input::MouseButton::Left)
     }
 
     /// Yields only middle mouse button `Click`s.
+    #[inline]
     pub fn middle(self) -> ButtonClicks<'a> {
         self.button(input::MouseButton::Middle)
     }
 
     /// Yield only right mouse button `Click`s.
+    #[inline]
     pub fn right(self) -> ButtonClicks<'a> {
         self.button(input::MouseButton::Right)
     }
@@ -397,6 +423,7 @@ impl<'a> Clicks<'a> {
 impl<'a> Drags<'a> {
 
     /// Yield only the `Drag`s that occurred from the given button.
+    #[inline]
     pub fn button(self, button: input::MouseButton) -> ButtonDrags<'a> {
         ButtonDrags {
             drags: self,
@@ -405,16 +432,19 @@ impl<'a> Drags<'a> {
     }
 
     /// Yield only left mouse button `Drag`s.
+    #[inline]
     pub fn left(self) -> ButtonDrags<'a> {
         self.button(input::MouseButton::Left)
     }
-    
+
     /// Yields only middle mouse button `Drag`s.
+    #[inline]
     pub fn middle(self) -> ButtonDrags<'a> {
         self.button(input::MouseButton::Middle)
     }
 
     /// Yield only right mouse button `Drag`s.
+    #[inline]
     pub fn right(self) -> ButtonDrags<'a> {
         self.button(input::MouseButton::Right)
     }

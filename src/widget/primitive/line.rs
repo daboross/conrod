@@ -67,6 +67,7 @@ pub enum Cap {
 impl Line {
 
     /// Build a new **Line** widget with the given style.
+    #[inline]
     pub fn styled(start: Point, end: Point, style: Style) -> Self {
         Line {
             start: start,
@@ -78,6 +79,7 @@ impl Line {
     }
 
     /// Build a new default **Line** widget.
+    #[inline]
     pub fn new(start: Point, end: Point) -> Self {
         Line::styled(start, end, Style::new())
     }
@@ -87,11 +89,13 @@ impl Line {
     ///
     /// If you would rather centre the start and end to the middle of the bounding box, use
     /// [**Line::centred**](./struct.Line#method.centred) instead.
+    #[inline]
     pub fn abs(start: Point, end: Point) -> Self {
         Line::abs_styled(start, end, Style::new())
     }
 
     /// The same as [**Line::abs**](./struct.Line#method.abs) but with the given style.
+    #[inline]
     pub fn abs_styled(start: Point, end: Point, style: Style) -> Self {
         let (xy, dim) = Rect::from_corners(start, end).xy_dim();
         Line::styled(start, end, style).wh(dim).xy(xy)
@@ -106,11 +110,13 @@ impl Line {
     ///
     /// If you would rather centre the bounding box to the points, use
     /// [**Line::abs**](./struct.Line#method.abs) instead.
+    #[inline]
     pub fn centred(start: Point, end: Point) -> Self {
         Line::centred_styled(start, end, Style::new())
     }
 
     /// The same as [**Line::centred**](./struct.Line#method.centred) but with the given style.
+    #[inline]
     pub fn centred_styled(start: Point, end: Point, style: Style) -> Self {
         let dim = Rect::from_corners(start, end).dim();
         let mut line = Line::styled(start, end, style).wh(dim);
@@ -122,24 +128,28 @@ impl Line {
     ///
     /// Use this instead of `Positionable::width` for the thickness of the `Line`, as `width` and
     /// `height` refer to the dimensions of the bounding rectangle.
+    #[inline]
     pub fn thickness(mut self, thickness: Scalar) -> Self {
         self.style.set_thickness(thickness);
         self
     }
 
     /// Make a solid line.
+    #[inline]
     pub fn solid(mut self) -> Self {
         self.style.set_pattern(Pattern::Solid);
         self
     }
 
     /// Make a line with a Dashed pattern.
+    #[inline]
     pub fn dashed(mut self) -> Self {
         self.style.set_pattern(Pattern::Dashed);
         self
     }
 
     /// Make a line with a Dotted pattern.
+    #[inline]
     pub fn dotted(mut self) -> Self {
         self.style.set_pattern(Pattern::Dotted);
         self
@@ -151,6 +161,7 @@ impl Line {
 impl Style {
 
     /// Constructor for a default Line Style.
+    #[inline]
     pub fn new() -> Self {
         Style {
             maybe_pattern: None,
@@ -161,65 +172,77 @@ impl Style {
     }
 
     /// Make a solid line.
+    #[inline]
     pub fn solid() -> Self {
         Style::new().pattern(Pattern::Solid)
     }
 
     /// Make a line with a Dashed pattern.
+    #[inline]
     pub fn dashed() -> Self {
         Style::new().pattern(Pattern::Dashed)
     }
 
     /// Make a line with a Dotted pattern.
+    #[inline]
     pub fn dotted() -> Self {
         Style::new().pattern(Pattern::Dotted)
     }
 
     /// The style with some given pattern.
+    #[inline]
     pub fn pattern(mut self, pattern: Pattern) -> Self {
         self.set_pattern(pattern);
         self
     }
 
     /// The style with some given color.
+    #[inline]
     pub fn color(mut self, color: Color) -> Self {
         self.set_color(color);
         self
     }
 
     /// The style with some given thickness.
+    #[inline]
     pub fn thickness(mut self, thickness: Scalar) -> Self {
         self.set_thickness(thickness);
         self
     }
 
     /// The style for the ends of the Line.
+    #[inline]
     pub fn cap(mut self, cap: Cap) -> Self {
         self.set_cap(cap);
         self
     }
 
     /// Set the pattern for the line.
+    #[inline]
     pub fn set_pattern(&mut self, pattern: Pattern) {
         self.maybe_pattern = Some(pattern);
     }
 
     /// Set the color for the line.
+    #[inline]
     pub fn set_color(&mut self, color: Color) {
         self.maybe_color = Some(color);
     }
 
     /// Set the thickness for the line.
+    #[inline]
     pub fn set_thickness(&mut self, thickness: Scalar) {
         self.maybe_thickness = Some(thickness);
     }
 
     /// Set the **Cap** for the line.
+    #[inline]
     pub fn set_cap(&mut self, cap: Cap) {
         self.maybe_cap = Some(cap);
     }
 
     /// The Pattern for the Line.
+    #[inline]
     pub fn get_pattern(&self, theme: &Theme) -> Pattern {
         const DEFAULT_PATTERN: Pattern = Pattern::Solid;
         self.maybe_pattern.or_else(|| theme.widget_style::<Style>().map(|default| {
@@ -228,6 +251,7 @@ impl Style {
     }
 
     /// The Color for the Line.
+    #[inline]
     pub fn get_color(&self, theme: &Theme) -> Color {
         self.maybe_color.or_else(|| theme.widget_style::<Style>().map(|default| {
             default.style.maybe_color.unwrap_or(theme.shape_color)
@@ -235,6 +259,7 @@ impl Style {
     }
 
     /// The width or thickness of the Line.
+    #[inline]
     pub fn get_thickness(&self, theme: &Theme) -> Scalar {
         const DEFAULT_THICKNESS: Scalar = 1.0;
         self.maybe_thickness.or_else(|| theme.widget_style::<Style>().map(|default| {
@@ -243,6 +268,7 @@ impl Style {
     }
 
     /// The styling for the ends of the Line.
+    #[inline]
     pub fn get_cap(&self, theme: &Theme) -> Cap {
         const DEFAULT_CAP: Cap = Cap::Flat;
         self.maybe_cap.or_else(|| theme.widget_style::<Style>().map(|default| {
@@ -258,14 +284,17 @@ impl Widget for Line {
     type Style = Style;
     type Event = ();
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, _: widget::id::Generator) -> Self::State {
         State {
             start: [0.0, 0.0],
@@ -273,6 +302,7 @@ impl Widget for Line {
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
@@ -304,6 +334,7 @@ impl Widget for Line {
 
 
 impl Colorable for Line {
+    #[inline]
     fn color(mut self, color: Color) -> Self {
         self.style.maybe_color = Some(color);
         self

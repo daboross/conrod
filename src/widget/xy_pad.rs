@@ -71,6 +71,7 @@ pub struct State {
 impl<'a, X, Y> XYPad<'a, X, Y> {
 
     /// Build a new XYPad widget.
+    #[inline]
     pub fn new(x_val: X, min_x: X, max_x: X, y_val: Y, min_y: Y, max_y: Y) -> Self {
         XYPad {
             common: widget::CommonBuilder::new(),
@@ -83,6 +84,7 @@ impl<'a, X, Y> XYPad<'a, X, Y> {
     }
 
     /// Specify the font used for displaying the label.
+    #[inline]
     pub fn label_font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.label_font_id = Some(Some(font_id));
         self
@@ -104,20 +106,24 @@ impl<'a, X, Y> Widget for XYPad<'a, X, Y>
     type Style = Style;
     type Event = Option<(X, Y)>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             ids: Ids::new(id_gen),
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

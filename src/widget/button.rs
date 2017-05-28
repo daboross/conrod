@@ -108,11 +108,13 @@ pub struct TimesClicked(pub u16);
 
 impl TimesClicked {
     /// `true` if the `Button` was clicked one or more times.
+    #[inline]
     pub fn was_clicked(self) -> bool { self.0 > 0 }
 }
 
 impl Iterator for TimesClicked {
     type Item = ();
+    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         if self.0 > 0 {
             self.0 -= 1;
@@ -127,6 +129,7 @@ impl Iterator for TimesClicked {
 impl<'a> Button<'a, Image> {
 
     /// Begin building a button displaying the given `Image` on top.
+    #[inline]
     pub fn image(image_id: image::Id) -> Self {
         let image = Image {
             image_id: image_id,
@@ -141,12 +144,14 @@ impl<'a> Button<'a, Image> {
     /// The rectangular area of the image that we wish to display.
     ///
     /// If this method is not called, the entire image will be used.
+    #[inline]
     pub fn source_rectangle(mut self, rect: Rect) -> Self {
         self.show.src_rect = Some(rect);
         self
     }
 
     /// Map the `Image`'s luminance to the given color.
+    #[inline]
     pub fn image_color(mut self, color: Color) -> Self {
         self.show.color = ImageColor::Normal(color);
         self
@@ -156,18 +161,21 @@ impl<'a> Button<'a, Image> {
     ///
     /// The color will change slightly when the button is highlighted or clicked to give the user
     /// some visual feedback.
+    #[inline]
     pub fn image_color_with_feedback(mut self, color: Color) -> Self {
         self.show.color = ImageColor::WithFeedback(color);
         self
     }
 
     /// The image displayed while the mouse hovers over the `Button`.
+    #[inline]
     pub fn hover_image(mut self, id: image::Id) -> Self {
         self.show.hover_image_id = Some(id);
         self
     }
 
     /// The image displayed while the `Button` is pressed.
+    #[inline]
     pub fn press_image(mut self, id: image::Id) -> Self {
         self.show.press_image_id = Some(id);
         self
@@ -178,12 +186,14 @@ impl<'a> Button<'a, Image> {
 impl<'a> Button<'a, Flat> {
 
     /// Begin building a flat-colored `Button` widget.
+    #[inline]
     pub fn new() -> Self {
         Self::new_internal(Flat)
     }
 
     /// Override the default button style
-    pub fn with_style(mut self, s: Style) -> Self{
+    #[inline]
+    pub fn with_style(mut self, s: Style) -> Self {
         self.style = s;
         self
     }
@@ -193,6 +203,7 @@ impl<'a> Button<'a, Flat> {
 impl<'a, S> Button<'a, S> {
 
     /// Create a button context to be built upon.
+    #[inline]
     fn new_internal(show: S) -> Self {
         Button {
             common: widget::CommonBuilder::new(),
@@ -204,12 +215,14 @@ impl<'a, S> Button<'a, S> {
     }
 
     /// Specify the font used for displaying the label.
+    #[inline]
     pub fn label_font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.label_font_id = Some(Some(font_id));
         self
     }
 
     /// Align the label to the left of the `Button`'s surface.
+    #[inline]
     pub fn left_justify_label(mut self) -> Self {
         self.style.label_justify = Some(text::Justify::Left);
         self
@@ -218,24 +231,28 @@ impl<'a, S> Button<'a, S> {
     /// Align the label to the mid-left of the `Button`'s surface.
     ///
     /// This is the default label alignment.
+    #[inline]
     pub fn center_justify_label(mut self) -> Self {
         self.style.label_justify = Some(text::Justify::Center);
         self
     }
 
     /// Align the label to the mid-left of the `Button`'s surface.
+    #[inline]
     pub fn right_justify_label(mut self) -> Self {
         self.style.label_justify = Some(text::Justify::Right);
         self
     }
 
     /// Specify the label's position relatively to `Button` along the *x* axis.
+    #[inline]
     pub fn label_x(mut self, x: position::Relative) -> Self {
         self.style.label_x = Some(x);
         self
     }
 
     /// Specify the label's position relatively to `Button` along the *y* axis.
+    #[inline]
     pub fn label_y(mut self, y: position::Relative) -> Self {
         self.style.label_y = Some(y);
         self
@@ -252,18 +269,22 @@ impl<'a> Widget for Button<'a, Flat> {
     type Style = Style;
     type Event = TimesClicked;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         FlatIds::new(id_gen)
     }
 
+    #[inline]
     fn style(&self) -> Style {
         self.style.clone()
     }

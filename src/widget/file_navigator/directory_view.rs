@@ -152,6 +152,7 @@ fn check_hidden(show_hidden: bool, types: super::Types, path: &std::path::PathBu
 impl<'a> DirectoryView<'a> {
 
     /// Begin building a `DirectoryNavigator` widget that displays only files of the given types.
+    #[inline]
     pub fn new(directory: &'a std::path::Path, types: super::Types<'a>) -> Self {
         DirectoryView {
             common: widget::CommonBuilder::new(),
@@ -163,18 +164,21 @@ impl<'a> DirectoryView<'a> {
     }
 
     /// The color of the unselected entries within each `DirectoryView`.
+    #[inline]
     pub fn unselected_color(mut self, color: Color) -> Self {
         self.style.unselected_color = Some(Some(color));
         self
     }
 
     /// The color of the `Text` used to display the file names.
+    #[inline]
     pub fn text_color(mut self, color: Color) -> Self {
         self.style.text_color = Some(Some(color));
         self
     }
 
     /// Whether to show hidden files and directories
+    #[inline]
     pub fn show_hidden_files(mut self, show_hidden: bool) -> Self {
         self.show_hidden = show_hidden;
         self
@@ -191,14 +195,17 @@ impl<'a> Widget for DirectoryView<'a> {
     type Style = Style;
     type Event = Vec<Event>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             entries: Vec::new(),
@@ -207,6 +214,7 @@ impl<'a> Widget for DirectoryView<'a> {
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }

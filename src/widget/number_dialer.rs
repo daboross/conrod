@@ -129,6 +129,7 @@ impl<'a, T> NumberDialer<'a, T>
     where T: Float,
 {
     /// Construct a new NumberDialer widget.
+    #[inline]
     pub fn new(value: T, min: T, max: T, precision: u8) -> Self {
         NumberDialer {
             common: widget::CommonBuilder::new(),
@@ -143,6 +144,7 @@ impl<'a, T> NumberDialer<'a, T>
     }
 
     /// Specify the font used for displaying the label.
+    #[inline]
     pub fn font_id(mut self, font_id: text::font::Id) -> Self {
         self.style.font_id = Some(Some(font_id));
         self
@@ -160,14 +162,17 @@ impl<'a, T> Widget for NumberDialer<'a, T>
     type Style = Style;
     type Event = Option<T>;
 
+    #[inline]
     fn common(&self) -> &widget::CommonBuilder {
         &self.common
     }
 
+    #[inline]
     fn common_mut(&mut self) -> &mut widget::CommonBuilder {
         &mut self.common
     }
 
+    #[inline]
     fn init_state(&self, id_gen: widget::id::Generator) -> Self::State {
         State {
             pressed_value_idx: None,
@@ -176,6 +181,7 @@ impl<'a, T> Widget for NumberDialer<'a, T>
         }
     }
 
+    #[inline]
     fn style(&self) -> Self::Style {
         self.style.clone()
     }
