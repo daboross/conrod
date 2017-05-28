@@ -50,6 +50,7 @@ piston2d-graphics = { version = "0.21.1", optional = true }
 
 [features]
 piston = ["piston2d-graphics"]
+nightly = []
 
 [dev-dependencies]
 find_folder = "0.3.0"
